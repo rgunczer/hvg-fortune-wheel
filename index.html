@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Canvas Test Animation</title>
+    <link href="https://fonts.googleapis.com/css?family=Lobster&display=swap" rel="stylesheet">
+    <script src="lib/tween.umd.js"></script>
+    <script src="lib/matter.js" type="text/javascript"></script>
+    <script src="utils.js"></script>
+    <style>
+        body,
+        html {
+            margin: 0px;
+            background-color: rgb(59, 134, 199);
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .container {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .container-matter {
+            display: flex;
+            /* justify-content: flex-start; */
+            justify-content: center;
+        }
+
+        h4 {
+            padding: 0;
+            margin: 0;
+        }
+
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            width: 300px;
+        }
+
+        li a {
+            background-color: #f1f1f1;
+            display: block;
+            color: #000;
+            padding: 8px 16px;
+            margin-bottom: 20px;
+            text-decoration: none;
+            font-size: xx-large;
+            text-align: center;
+            border-radius: 25px;
+        }
+
+        /* Change the link color on hover */
+        li a:hover {
+            background-color: #555;
+            color: white;
+        }
+
+        #fortune-wheel-canvas {
+            position: fixed;
+        }
+
+        .editor-area {
+            position: fixed;
+            left: 0px;
+        }
+
+        .input {
+            display: block;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0, 0, 0);
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 10px;
+            border: 1px solid black;
+            border-radius: 25px;
+            width: 80%;
+            box-shadow: 0px 0px 19px 11px rgba(25, 25, 25, 1);
+        }
+
+        .question-text {
+            font-family: 'Lobster', cursive;
+            font-size: 4em;
+            text-align: center;
+        }
+
+        .question-title {
+            font-family: 'Lobster', cursive;
+            font-size: 3.5em;
+            text-align: center;
+            padding: 0;
+            margin: 0;
+            border: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="fortune-wheel-canvas"></canvas>
+    <div id="question-modal" class="modal">
+        <div class="modal-content">
+            <p id="question-title" class="question-title">JOKER</p>
+            <p id="question-text" class="question-text">What do you get when you cross mentally ill loner with a society
+                that abandons him and treats him like trash?</p>
+        </div>
+    </div>
+    <div class="container">
+
+        <div style="padding: 100px">
+            <ul>
+                <li><a href="#" id="spinTheWheel">Spin</a></li>
+                <li><a href="#" id="stopTheWheel">Stop Wheel</a></li>
+                <li><a href="#" id="justATest">Test Modal</a></li>
+                <li><a href="#" id="renderMatter">Render Physics</a></li>
+            </ul>
+        </div>
+        <div class="editor-area" style="display: block;">
+            <button id="show-hide-editor">Show / Hide Editor</button>
+            <div id="editor" style="display: block">
+                <h4>Wheel</h4>
+                <div class="input">
+                    <label for="selected-slice-flash-color">Selected Slice Flash Color:</label>
+                    <input type="color" id="selected-slice-flash-color" name="selected-slice-flash-color"
+                        value="#ff0000">
+                    <label for="selected-slice-flash-time">Flashing Time:</label>
+                    <input type="range" id="selected-slice-flash-time" name="selected-slice-flash-time" min="10"
+                        max="300">
+                </div>
+                <h4>Dividers</h4>
+                <div class="input">
+                    <label for="dividers-color">Color:</label>
+                    <input type="color" id="dividers-color" name="dividers-color" value="#ff0000">
+                    <label for="dividers-size">Size:</label>
+                    <input type="range" id="dividers-size" name="dividers-size" min="0" max="100">
+                </div>
+                <h4>Slices</h4>
+                <div class="input">
+                    <label for="slice-0-color">Slice 0, Color:</label>
+                    <input type="color" id="slice-0-color" name="slice-0-color" value="#ff0000">
+                    <label for="slice-0-text">Text:</label>
+                    <input type="text" id="slice-0-text" name="slice-0-text" value="">
+                </div>
+                <div class="input">
+                    <label for="slice-1-color">Slice 1, Color:</label>
+                    <input type="color" id="slice-1-color" name="slice-1-color" value="#ff0000">
+                    <label for="slice-1-color">Text:</label>
+                    <input type="text" id="slice-1-text" name="slice-1-text" value="">
+                </div>
+                <div class="input">
+                    <label for="slice-2-color">Slice 2, Color:</label>
+                    <input type="color" id="slice-2-color" name="slice-2-color" value="#ff0000">
+                    <label for="slice-2-color">Text:</label>
+                    <input type="text" id="slice-2-text" name="slice-2-text" value="">
+                </div>
+                <div class="input">
+                    <label for="slice-3-color">Slice 3, Color:</label>
+                    <input type="color" id="slice-3-color" name="slice-3-color" value="#ff0000">
+                    <label for="slice-3-color">Text:</label>
+                    <input type="text" id="slice-3-text" name="slice-3-text" value="">
+                </div>
+                <div class="input">
+                    <label for="slice-4-color">Slice 4, Color:</label>
+                    <input type="color" id="slice-4-color" name="slice-4-color" value="#ff0000">
+                    <label for="slice-4-color">Text:</label>
+                    <input type="text" id="slice-4-text" name="slice-4-text" value="">
+                </div>
+                <div class="input">
+                    <label for="slice-5-color">Slice 5, Color:</label>
+                    <input type="color" id="slice-5-color" name="slice-5-color" value="#ff0000">
+                    <label for="slice-5-color">Text:</label>
+                    <input type="text" id="slice-5-text" name="slice-5-text" value="">
+                </div>
+                <h4>Center</h4>
+                <div class="input">
+                    <label for="center-color">Color:</label>
+                    <input type="color" id="center-color" name="center-color" value="#ff0000">
+                    <label for="center-size">Size:</label>
+                    <input type="range" id="center-size" name="center-size" min="0" max="60">
+                </div>
+                <h4>Inner Ring</h4>
+                <div class="input">
+                    <label for="inner-ring-color">Color:</label>
+                    <input type="color" id="inner-ring-color" name="inner-ring-color" value="#ff0000">
+                    <label for="inner-ring-size">Size:</label>
+                    <input type="range" id="inner-ring-size" name="inner-ring-size" min="0" max="60">
+                </div>
+                <h4>Outer Ring</h4>
+                <div class="input">
+                    <label for="outer-ring-color">Color:</label>
+                    <input type="color" id="outer-ring-color" name="outer-ring-color" value="#ff0000">
+                    <label for="outer-ring-size">Size:</label>
+                    <input type="range" id="outer-ring-size" name="outer-ring-size" min="0" max="60">
+                </div>
+                <h4>Text</h4>
+                <div class="input">
+                    <label for="text-color">Color:</label>
+                    <input type="color" id="text-color" name="text-color" value="#ff0000">
+                    <label for="text-size">Size:</label>
+                    <input type="range" id="text-size" name="text-size" min="0" max="160">
+                </div>
+                <div class="input">
+                    <label for="text-offset">Offset:</label>
+                    <input type="range" id="text-offset" name="text-offset" min="60" max="600">
+                </div>
+                <h4>Draw Flags</h4>
+                <div class="input">
+                    <label for="draw-slices">Draw Slices:</label>
+                    <input type="checkbox" id="draw-slices" name="draw-slices">
+                    &nbsp;
+                    <label for="draw-dividers">Draw Dividers:</label>
+                    <input type="checkbox" id="draw-dividers" name="draw-dividers">
+                    &nbsp;
+                    <label for="draw-texts">Draw Texts:</label>
+                    <input type="checkbox" id="draw-texts" name="draw-texts">
+                    &nbsp;
+                    <label for="draw-inner-ring">Inner Ring:</label>
+                    <input type="checkbox" id="draw-inner-ring" name="draw-inner-ring">
+                </div>
+                <div class="input">
+                    <label for="draw-center">Center:</label>
+                    <input type="checkbox" id="draw-center" name="draw-center">
+                    &nbsp;
+                    <label for="draw-outer-ring">Outer Ring:</label>
+                    <input type="checkbox" id="draw-outer-ring" name="draw-outer-ring">
+                    &nbsp;
+                    <label for="draw-tongue">Tongue:</label>
+                    <input type="checkbox" id="draw-tongue" name="draw-tongue">
+                    &nbsp;
+                    <label for="draw-collision-circles">Collision Circles:</label>
+                    <input type="checkbox" id="draw-collision-circles" name="draw-collision-circles">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="fortune-wheel.js"></script>
+    <script src="editor.js"></script>
+</body>
+
+</html>

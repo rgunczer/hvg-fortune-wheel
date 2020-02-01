@@ -8,11 +8,7 @@
         if (wheelData.slices[i].color.startsWith('#')) {
             elemColorPicker.value = wheelData.slices[i].color;
         } else {
-            const arr = wheelData.slices[i].color.split(',');
-            const r = parseInt(arr[0], 10);
-            const g = parseInt(arr[1], 10);
-            const b = parseInt(arr[2], 10);
-            elemColorPicker.value = rgbToHex(r, g, b);
+            elemColorPicker.value = rgbToHex(wheelData.slices[i].color);
         }
 
         elemColorPicker.addEventListener('change', (event) => {
@@ -231,5 +227,31 @@
             }
         });
 
+    const pageBgColorElem = document.querySelector('#page-bg-color');
+
+    const style = getComputedStyle(document.body);
+
+    pageBgColorElem.value = rgbToHex(style.backgroundColor);
+
+    pageBgColorElem.addEventListener('change', (event) => {
+        console.log('drawFlags page background color changed', event.target.checked);
+        document.body.style.backgroundColor = pageBgColorElem.value;
+        draw();
+    });
+
+    document.querySelector('#save-settings').addEventListener('click', () => {
+        localStorage.setItem('bg-color', document.body.style.backgroundColor);
+    });
+
+    document.querySelector('#load-settings').addEventListener('click', () => {
+        document.body.style.backgroundColor = localStorage.getItem('bg-color');
+        pageBgColorElem.value = rgbToHex(document.body.style.backgroundColor);
+    });
+
+    const pageBgColor = localStorage.getItem('bg-color');
+    if (pageBgColor !== null) {
+        document.body.style.backgroundColor = pageBgColor;
+        pageBgColorElem.value = rgbToHex(document.body.style.backgroundColor);
+    }
 
 })();

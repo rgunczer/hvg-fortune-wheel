@@ -7,7 +7,13 @@ function componentToHex(c) {
     return hex.length == 1 ? "0" + hex : hex;
 }
 
-function rgbToHex(r, g, b) {
+function rgbToHex(rgbString) {
+    const tmp = rgbString.replace('rgb(', '').replace(')', '');
+    const arr = tmp.split(',');
+    const r = parseInt(arr[0], 10);
+    const g = parseInt(arr[1], 10);
+    const b = parseInt(arr[2], 10);
+
     return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
 }
 

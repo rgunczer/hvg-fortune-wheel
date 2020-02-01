@@ -8,6 +8,8 @@
     <title>Canvas Test Animation</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css?family=Lobster&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Permanent+Marker&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Knewave&display=swap" rel="stylesheet">
     <script src="lib/tween.umd.js"></script>
     <script src="lib/matter.js" type="text/javascript"></script>
     <script src="utils.js"></script>
@@ -18,7 +20,7 @@
     <div id="question-modal" class="modal">
         <div class="modal-content">
             <p id="question-title" class="question-title">JOKER</p>
-            <p id="question-text" class="question-text">What do you get when you cross mentally ill loner with a society
+            <p id="question-text" class="question-text">What do you get when you cross a mentally ill loner with a society
                 that abandons him and treats him like trash?</p>
         </div>
     </div>
@@ -34,7 +36,15 @@
         </div>
         <div class="editor-area" style="display: block;">
             <button id="show-hide-editor">Show / Hide Editor</button>
+            <label>Settings: </label>
+            <button id="save-settings">Save</button>
+            <button id="load-settings">Load</button>
             <div id="editor" style="display: block">
+                <h4>Page</h4>
+                <div class="input">
+                    <label for="page-bg-color">Background Color:</label>
+                    <input type="color" id="page-bg-color" name="page-bg-color" value="#ffffff">
+                </div>
                 <h4>Wheel</h4>
                 <div class="input">
                     <label for="selected-slice-flash-color">Selected Slice Flash Color:</label>
@@ -44,14 +54,18 @@
                     <input type="range" id="selected-slice-flash-time" name="selected-slice-flash-time" min="10"
                         max="300">
                 </div>
-                <h4>Dividers</h4>
+                <h4>Dividers
+                    <input type="checkbox" id="draw-dividers" name="draw-dividers">
+                </h4>
                 <div class="input">
                     <label for="dividers-color">Color:</label>
                     <input type="color" id="dividers-color" name="dividers-color" value="#ff0000">
                     <label for="dividers-size">Size:</label>
                     <input type="range" id="dividers-size" name="dividers-size" min="0" max="100">
                 </div>
-                <h4>Slices</h4>
+                <h4>Slices
+                    <input type="checkbox" id="draw-slices" name="draw-slices">
+                </h4>
                 <div class="input">
                     <label for="slice-0-color">Slice 0, Color:</label>
                     <input type="color" id="slice-0-color" name="slice-0-color" value="#ff0000">
@@ -88,28 +102,36 @@
                     <label for="slice-5-color">Text:</label>
                     <input type="text" id="slice-5-text" name="slice-5-text" value="">
                 </div>
-                <h4>Center</h4>
+                <h4>Center
+                    <input type="checkbox" id="draw-center" name="draw-center">
+                </h4>
                 <div class="input">
                     <label for="center-color">Color:</label>
                     <input type="color" id="center-color" name="center-color" value="#ff0000">
                     <label for="center-size">Size:</label>
                     <input type="range" id="center-size" name="center-size" min="0" max="60">
                 </div>
-                <h4>Inner Ring</h4>
+                <h4>Inner Ring
+                    <input type="checkbox" id="draw-inner-ring" name="draw-inner-ring">
+                </h4>
                 <div class="input">
                     <label for="inner-ring-color">Color:</label>
                     <input type="color" id="inner-ring-color" name="inner-ring-color" value="#ff0000">
                     <label for="inner-ring-size">Size:</label>
                     <input type="range" id="inner-ring-size" name="inner-ring-size" min="0" max="60">
                 </div>
-                <h4>Outer Ring</h4>
+                <h4>Outer Ring
+                    <input type="checkbox" id="draw-outer-ring" name="draw-outer-ring">
+                </h4>
                 <div class="input">
                     <label for="outer-ring-color">Color:</label>
                     <input type="color" id="outer-ring-color" name="outer-ring-color" value="#ff0000">
                     <label for="outer-ring-size">Size:</label>
                     <input type="range" id="outer-ring-size" name="outer-ring-size" min="0" max="60">
                 </div>
-                <h4>Text</h4>
+                <h4>Text
+                    <input type="checkbox" id="draw-texts" name="draw-texts">
+                </h4>
                 <div class="input">
                     <label for="text-color">Color:</label>
                     <input type="color" id="text-color" name="text-color" value="#ff0000">
@@ -122,25 +144,6 @@
                 </div>
                 <h4>Draw Flags</h4>
                 <div class="input">
-                    <label for="draw-slices">Draw Slices:</label>
-                    <input type="checkbox" id="draw-slices" name="draw-slices">
-                    &nbsp;
-                    <label for="draw-dividers">Draw Dividers:</label>
-                    <input type="checkbox" id="draw-dividers" name="draw-dividers">
-                    &nbsp;
-                    <label for="draw-texts">Draw Texts:</label>
-                    <input type="checkbox" id="draw-texts" name="draw-texts">
-                    &nbsp;
-                    <label for="draw-inner-ring">Inner Ring:</label>
-                    <input type="checkbox" id="draw-inner-ring" name="draw-inner-ring">
-                </div>
-                <div class="input">
-                    <label for="draw-center">Center:</label>
-                    <input type="checkbox" id="draw-center" name="draw-center">
-                    &nbsp;
-                    <label for="draw-outer-ring">Outer Ring:</label>
-                    <input type="checkbox" id="draw-outer-ring" name="draw-outer-ring">
-                    &nbsp;
                     <label for="draw-tongue">Tongue:</label>
                     <input type="checkbox" id="draw-tongue" name="draw-tongue">
                     &nbsp;

@@ -262,6 +262,7 @@ function drawText(params) {
 
     context.fillStyle = wheelData.text.color;
     context.font = wheelData.text.size + 'px Lobster';
+    // context.font = wheelData.text.size + 'px Permanent Marker';
 
     const x = wheelBody.position.x;
     const y = wheelBody.position.y;
@@ -323,7 +324,7 @@ function drawDebugCollisionCircles(params) {
 
     for (let i = 0; i < arr.length; ++i) {
         context.beginPath();
-        context.arc(arr[i].x, arr[i].y, radius * 0.46, 0, 2 * Math.PI);
+        context.arc(arr[i].x, arr[i].y, params.radius * 0.46, 0, 2 * Math.PI);
         context.stroke();
     }
 

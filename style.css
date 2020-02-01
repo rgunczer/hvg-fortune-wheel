@@ -1,0 +1,98 @@
+body,
+html {
+    margin: 0px;
+    background-color: rgb(59, 134, 199);
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.container {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.container-matter {
+    display: flex;
+    /* justify-content: flex-start; */
+    justify-content: center;
+}
+
+h4 {
+    padding: 0;
+    margin: 0;
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 300px;
+}
+
+li a {
+    background-color: #f1f1f1;
+    display: block;
+    color: #000;
+    padding: 8px 16px;
+    margin-bottom: 20px;
+    text-decoration: none;
+    font-size: xx-large;
+    text-align: center;
+    border-radius: 25px;
+}
+
+/* Change the link color on hover */
+li a:hover {
+    background-color: #555;
+    color: white;
+}
+
+#fortune-wheel-canvas {
+    position: fixed;
+}
+
+.editor-area {
+    position: fixed;
+    left: 0px;
+}
+
+.input {
+    display: block;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 10% auto;
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 25px;
+    width: 80%;
+    box-shadow: 0px 0px 19px 11px rgba(25, 25, 25, 1);
+}
+
+.question-text {
+    font-family: 'Lobster', cursive;
+    font-size: 4em;
+    text-align: center;
+}
+
+.question-title {
+    font-family: 'Lobster', cursive;
+    font-size: 3.5em;
+    text-align: center;
+    padding: 0;
+    margin: 0;
+    border: 0;
+}

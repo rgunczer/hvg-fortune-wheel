@@ -24,6 +24,7 @@ let tongueBody = null;
 let wheelBody = null;
 let spinning = false;
 let drawPhysics = false;
+let testRandomness = false;
 
 const drawFlags = {
     slices: true,
@@ -53,7 +54,22 @@ const flasher = {
         if (this.counter > wheelData.flashing.time) {
             questionTitleElem.innerHTML = wheelData.slices[this.index].text;
             modalElem.style.display = 'block';
+
+            if (testRandomness) {
+                const color = hexToRgb(wheelData.slices[this.index].color);
+
+                color.r -= 30;
+
+                if (color.r < 0) {
+                    color.r = 0;
+                }
+
+                wheelData.slices[this.index].color = rgbToHex2(color.r, color.r, color.r);
+                console.log(wheelData.slices[this.index].color);
+            }
+
             this.setup();
+
             return fillStyle;
         } else {
             if (this.counter % 9 === 0) {
@@ -86,6 +102,12 @@ const wheelData = {
     "outerRing": { "color": "#5a349a", "size": 17 },
     "slices": [{ "color": "#918bc5", "text": "Sekiro" }, { "color": "#a06bd1", "text": "Nioh" }, { "color": "#4f59b9", "text": "RDR2" }, { "color": "#73719d", "text": "FarCry" }, { "color": "#6872b0", "text": "Doom" }, { "color": "#7557cc", "text": "Yakuza" }]
 };
+
+if (testRandomness) {
+    wheelData.slices.forEach(slice => {
+        slice.color = rgbToHex2(255, 255, 255);
+    });
+}
 
 function setCanvasSize() {
     canvas.width = window.innerHeight * 1.2;

@@ -254,4 +254,11 @@
         pageBgColorElem.value = rgbToHex(document.body.style.backgroundColor);
     }
 
+    document.querySelector('#test-randomness').addEventListener('click', () => {
+        testRandomness = true;
+        wheelData.slices.forEach(slice => {
+            slice.color = rgbToHex2(255, 255, 255);
+        });
+    });
+
 })();

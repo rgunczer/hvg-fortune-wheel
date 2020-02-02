@@ -27,8 +27,8 @@ let drawPhysics = false;
 let testRandomness = false;
 
 const wheelSpeed = {
-    min: 20,
-    max: 30
+    min: 3,
+    max: 7
 };
 
 const dump = {};
@@ -163,7 +163,8 @@ document.querySelector('#spinTheWheel').addEventListener('click', () => {
     dump.max = speedMax;
     dump.velocity = velocity;
 
-    Body.setAngularVelocity(wheelBody, Math.PI / velocity);
+    // Body.setAngularVelocity(wheelBody, Math.PI / velocity);
+    wheelBody.torque = velocity * 1000;
 });
 
 document.querySelector('#stopTheWheel').addEventListener('click', () => {
@@ -171,7 +172,6 @@ document.querySelector('#stopTheWheel').addEventListener('click', () => {
     spinning = false;
     flasher.setup();
     Body.setAngularVelocity(wheelBody, 0);
-
 });
 
 document.querySelector('#justATest').addEventListener('click', () => {
@@ -357,16 +357,20 @@ function drawTongue(params) {
 }
 
 function drawDebugCollisionCircles(params) {
-    const arr = calcCollisionCircles();
+    const { arr, radius } = calcCollisionCircles();
 
     for (let i = 0; i < arr.length; ++i) {
         context.beginPath();
-        context.arc(arr[i].x, arr[i].y, params.radius * 0.46, 0, 2 * Math.PI);
+        context.arc(arr[i].x, arr[i].y, radius, 0, 2 * Math.PI);
         context.stroke();
     }
 
+    // const { min, max } = tongueBody.bounds;
+    // const x = max.x - min.x;
+    // const y = max.y - min.y;
+
     context.beginPath();
-    context.arc(wheelBody.position.x + params.radius * 0.9, wheelBody.position.y, 10, 0, 2 * Math.PI);
+    context.arc(tongueBody.position.x, tongueBody.position.y, params.radius * 0.02, 0, 2 * Math.PI);
     context.stroke();
 }
 
@@ -382,9 +386,13 @@ function drawCenterImage(params) {
     context.drawImage(image, x, y, w, h);
 }
 
+function getRadius() {
+    return (canvas.height / 2) * 0.95;
+}
+
 function draw() {
     const params = {
-        radius: (canvas.height / 2) * 0.95
+        radius: getRadius()
     };
 
     context.clearRect(0, 0, canvas.width, canvas.height);
@@ -410,11 +418,11 @@ function draw() {
 }
 
 function calcCollisionCircles() {
-    let radius = (canvas.height / 2) * 0.91;
+    const x = getRadius();
     const arr = [];
 
     for (let i = 0; i < wheelData.slices.length; ++i) {
-        const newPos = rotatePointCenter(radius, 0, rad2deg(wheelBody.angle) + 30 + i * 60);
+        const newPos = rotatePointCenter(x, 0, rad2deg(wheelBody.angle) + 30 + i * 60);
 
         arr.push(newPos);
 
@@ -422,26 +430,25 @@ function calcCollisionCircles() {
         newPos.y += wheelBody.position.y;
     }
 
-    return arr;
+    return {
+        radius: x * 0.5,
+        arr,
+    };
 }
 
 function checkSelectedSliceAfterSpinning() {
     if (spinning && wheelBody.angularSpeed < 0.001 && tongueBody.angularSpeed < 0.001) {
-        const radius = (canvas.height / 2) * 0.95;
-        const arr = calcCollisionCircles();
+
+        const { arr, radius } = calcCollisionCircles();
 
         for (let i = 0; i < arr.length; ++i) {
-            const tip = {
-                x: wheelBody.position.x + radius,
-                y: wheelBody.position.y
-            }
-
-            const inside = pointInCircle(tip.x, tip.y, arr[i].x, arr[i].y, 170);
-
+            const inside = pointInCircle(tongueBody.position.x, tongueBody.position.y, arr[i].x, arr[i].y, radius);
+            dump.pointInSideCircle = inside;
             if (inside) {
                 console.log('inside [' + wheelData.slices[i].text + ']');
                 spinning = false;
                 flasher.setup(i);
+                break;
             }
         }
     }
@@ -449,6 +456,7 @@ function checkSelectedSliceAfterSpinning() {
     dump.spinning = spinning;
     dump.wheelSpeed = wheelBody.angularSpeed;
     dump.tongueSpeed = tongueBody.angularSpeed;
+    dump.torque = wheelBody.torque;
 }
 
 function initPhysics() {

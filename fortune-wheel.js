@@ -26,6 +26,13 @@ let spinning = false;
 let drawPhysics = false;
 let testRandomness = false;
 
+const wheelSpeed = {
+    min: 20,
+    max: 30
+};
+
+const dump = {};
+
 const drawFlags = {
     slices: true,
     dividers: true,
@@ -110,10 +117,13 @@ if (testRandomness) {
 }
 
 function setCanvasSize() {
-    canvas.width = window.innerHeight * 1.2;
-    canvas.height = window.innerHeight;
+    const h = window.innerHeight; // * 0.75;
+
+    canvas.width = h * 1.2;
+    canvas.height = h;
 
     canvas.style.left = (window.innerWidth / 2 - canvas.width / 2) + 'px';
+    canvas.style.top = (window.innerHeight / 2 - canvas.height / 2) + 'px';
 }
 
 function loadImages() {
@@ -121,7 +131,7 @@ function loadImages() {
     let count = 0;
 
     const onload = () => {
-        console.log('images loaded...');
+        console.log('image loaded...');
         if (++count === keys.length) {
             initPhysics();
             animRequestId = window.requestAnimationFrame(animate);
@@ -129,7 +139,7 @@ function loadImages() {
     }
 
     keys.forEach(key => {
-        console.log(imageData[key].fileName)
+        console.log(`loading [${imageData[key].fileName}] ...`);
         imageData[key].img = new Image();
         imageData[key].img.src = `./assets/${imageData[key].fileName}.png`;
         imageData[key].img.onload = onload
@@ -146,9 +156,14 @@ document.querySelector('#spinTheWheel').addEventListener('click', () => {
     spinning = true;
     flasher.setup();
 
-    const velocity = Math.PI / getRandom(6, 6 * 3);
+    const speedMin = parseInt(wheelSpeed.min, 10);
+    const speedMax = parseInt(wheelSpeed.max, 10);
+    const velocity = getRandom(speedMin, speedMax);
+    dump.min = speedMin;
+    dump.max = speedMax;
+    dump.velocity = velocity;
 
-    Body.setAngularVelocity(wheelBody, velocity);
+    Body.setAngularVelocity(wheelBody, Math.PI / velocity);
 });
 
 document.querySelector('#stopTheWheel').addEventListener('click', () => {
@@ -390,6 +405,8 @@ function draw() {
     drawFlags.tongue && drawTask(params, drawTongue);
     drawTask(params, drawCenterImage);
     drawFlags.collisionCircles && drawTask(params, drawDebugCollisionCircles);
+
+    document.getElementById('dump').innerHTML = JSON.stringify(dump, null, 2);
 }
 
 function calcCollisionCircles() {
@@ -428,6 +445,10 @@ function checkSelectedSliceAfterSpinning() {
             }
         }
     }
+
+    dump.spinning = spinning;
+    dump.wheelSpeed = wheelBody.angularSpeed;
+    dump.tongueSpeed = tongueBody.angularSpeed;
 }
 
 function initPhysics() {
@@ -511,7 +532,6 @@ function initPhysics() {
         constraintWheel,
     ]);
 }
-
 
 // setTimeout(() => {
 //     modalElem.style.display = 'block';

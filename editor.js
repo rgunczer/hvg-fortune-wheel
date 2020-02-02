@@ -261,4 +261,16 @@
         });
     });
 
+    ['min', 'max'].forEach(key => {
+        const elem = document.querySelector(`#wheel-${key}-speed`);
+        if (elem) {
+            elem.value = wheelSpeed[key];
+
+            elem.addEventListener('change', (event) => {
+                console.log('wheel Speed ' + key + ' changed', event.target.checked);
+                wheelSpeed[key] = elem.value;
+            });
+        }
+    });
+
 })();

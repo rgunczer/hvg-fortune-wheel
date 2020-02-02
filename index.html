@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Canvas Test Animation</title>
+    <title>HVG Fortune Wheel - TCS</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css?family=Lobster&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Permanent+Marker&display=swap" rel="stylesheet">
@@ -20,7 +20,8 @@
     <div id="question-modal" class="modal">
         <div class="modal-content">
             <p id="question-title" class="question-title">JOKER</p>
-            <p id="question-text" class="question-text">What do you get when you cross a mentally ill loner with a society
+            <p id="question-text" class="question-text">What do you get when you cross a mentally ill loner with a
+                society
                 that abandons him and treats him like trash?</p>
         </div>
     </div>
@@ -41,8 +42,8 @@
             <button id="load-settings">Load</button>
             &nbsp;
             <button id="test-randomness">Test Randomness</button>
-            <div id="editor" style="display: block">
-                <h4>Page</h4>
+            <pre id="dump"></pre>
+            <div id="editor" style="display: block" <h4>Page</h4>
                 <div class="input">
                     <label for="page-bg-color">Background Color:</label>
                     <input type="color" id="page-bg-color" name="page-bg-color" value="#ffffff">
@@ -151,6 +152,15 @@
                     &nbsp;
                     <label for="draw-collision-circles">Collision Circles:</label>
                     <input type="checkbox" id="draw-collision-circles" name="draw-collision-circles">
+                </div>
+                <h4>Wheel</h4>
+                <div class="input">
+                    <label for="wheel-min-speed">Min Speed:</label>
+                    <input type="range" id="wheel-min-speed" name="wheel-min-speed" min="10" max="60">
+                </div>
+                <div class="input">
+                    <label for="wheel-max-speed">Max Speed:</label>
+                    <input type="range" id="wheel-max-speed" name="wheel-max-speed" min="10" max="60">
                 </div>
             </div>
         </div>

@@ -20,6 +20,7 @@
     <div id="question-modal" class="modal">
         <div class="modal-content">
             <p id="question-title" class="question-title">JOKER</p>
+            <hr>
             <p id="question-text" class="question-text">What do you get when you cross a mentally ill loner with a
                 society
                 that abandons him and treats him like trash?</p>
@@ -37,27 +38,41 @@
         </div>
         <div class="editor-area" style="display: block;">
             <button id="show-hide-editor">Show / Hide Editor</button>
-            <label>Settings: </label>
-            <button id="save-settings">Save</button>
-            <button id="load-settings">Load</button>
+            <button id="show-hide-debug">Show / Hide Debug</button>
             &nbsp;
             <button id="test-randomness">Test Randomness</button>
-            <pre id="dump"></pre>
-            <div id="editor" style="display: block">
+            <pre id="dump" style="display: block;"></pre>
+            <div id="editor" style="display: block;">
+                <label>Settings: </label>
+                <button id="save-settings">Save</button>
+                <button id="load-settings">Load</button>
+                <hr>
                 <h4>Page</h4>
                 <div class="input">
                     <label for="page-bg-color">Background Color:</label>
                     <input type="color" id="page-bg-color" name="page-bg-color" value="#ffffff">
                 </div>
+                <hr>
                 <h4>Wheel</h4>
                 <div class="input">
                     <label for="selected-slice-flash-color">Selected Slice Flash Color:</label>
                     <input type="color" id="selected-slice-flash-color" name="selected-slice-flash-color"
                         value="#ff0000">
+                </div>
+                <div class="input">
                     <label for="selected-slice-flash-time">Flashing Time:</label>
                     <input type="range" id="selected-slice-flash-time" name="selected-slice-flash-time" min="10"
                         max="300">
                 </div>
+                <div class="input">
+                    <label for="wheel-min-speed">Min Speed:</label>
+                    <input type="range" id="wheel-min-speed" name="wheel-min-speed" min="1" max="10">
+                </div>
+                <div class="input">
+                    <label for="wheel-max-speed">Max Speed:</label>
+                    <input type="range" id="wheel-max-speed" name="wheel-max-speed" min="1" max="10">
+                </div>
+                <hr>
                 <h4>Dividers
                     <input type="checkbox" id="draw-dividers" name="draw-dividers">
                 </h4>
@@ -67,6 +82,7 @@
                     <label for="dividers-size">Size:</label>
                     <input type="range" id="dividers-size" name="dividers-size" min="0" max="100">
                 </div>
+                <hr>
                 <h4>Slices
                     <input type="checkbox" id="draw-slices" name="draw-slices">
                 </h4>
@@ -106,6 +122,7 @@
                     <label for="slice-5-color">Text:</label>
                     <input type="text" id="slice-5-text" name="slice-5-text" value="">
                 </div>
+                <hr>
                 <h4>Center
                     <input type="checkbox" id="draw-center" name="draw-center">
                 </h4>
@@ -115,6 +132,7 @@
                     <label for="center-size">Size:</label>
                     <input type="range" id="center-size" name="center-size" min="0" max="60">
                 </div>
+                <hr>
                 <h4>Inner Ring
                     <input type="checkbox" id="draw-inner-ring" name="draw-inner-ring">
                 </h4>
@@ -124,6 +142,7 @@
                     <label for="inner-ring-size">Size:</label>
                     <input type="range" id="inner-ring-size" name="inner-ring-size" min="0" max="60">
                 </div>
+                <hr>
                 <h4>Outer Ring
                     <input type="checkbox" id="draw-outer-ring" name="draw-outer-ring">
                 </h4>
@@ -133,6 +152,7 @@
                     <label for="outer-ring-size">Size:</label>
                     <input type="range" id="outer-ring-size" name="outer-ring-size" min="0" max="60">
                 </div>
+                <hr>
                 <h4>Text
                     <input type="checkbox" id="draw-texts" name="draw-texts">
                 </h4>
@@ -146,6 +166,7 @@
                     <label for="text-offset">Offset:</label>
                     <input type="range" id="text-offset" name="text-offset" min="60" max="600">
                 </div>
+                <hr>
                 <h4>Draw Flags</h4>
                 <div class="input">
                     <label for="draw-tongue">Tongue:</label>
@@ -154,16 +175,7 @@
                     <label for="draw-collision-circles">Collision Circles:</label>
                     <input type="checkbox" id="draw-collision-circles" name="draw-collision-circles">
                 </div>
-                <h4>Wheel</h4>
-                <div class="input">
-                    <label for="wheel-min-speed">Min Speed:</label>
-                    <input type="range" id="wheel-min-speed" name="wheel-min-speed" min="1" max="10">
-                </div>
-                <div class="input">
-                    <label for="wheel-max-speed">Max Speed:</label>
-                    <input type="range" id="wheel-max-speed" name="wheel-max-speed" min="1" max="10">
-                </div>
-
+                <hr>
                 <h4>Questions</h4>
                 <div id="questions">
                     <div class="input">

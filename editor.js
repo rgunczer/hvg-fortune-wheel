@@ -52,7 +52,7 @@
 
     elemOuterRingSize.value = wheelData.outerRing.size;
 
-    elemOuterRingSize.addEventListener('change', (event) => {
+    elemOuterRingSize.addEventListener('input', (event) => {
 
         console.log('outer ring size changed', event.target.value);
 
@@ -79,7 +79,7 @@
 
     elemTextSize.value = wheelData.text.size;
 
-    elemTextSize.addEventListener('change', (event) => {
+    elemTextSize.addEventListener('input', (event) => {
 
         console.log('text size changed', event.target.value);
 
@@ -92,7 +92,7 @@
 
     elemTextOffset.value = wheelData.text.offsetFromCenter;
 
-    elemTextOffset.addEventListener('change', (event) => {
+    elemTextOffset.addEventListener('input', (event) => {
 
         console.log('text offset changed', event.target.value);
 
@@ -142,7 +142,7 @@
 
     centerSize.value = wheelData.center.size;
 
-    centerSize.addEventListener('change', (event) => {
+    centerSize.addEventListener('input', (event) => {
 
         console.log('center color changed', event.target.value);
 
@@ -181,7 +181,7 @@
 
     innerRingSize.value = wheelData.innerRing.size;
 
-    innerRingSize.addEventListener('change', (event) => {
+    innerRingSize.addEventListener('input', (event) => {
 
         console.log('inner ring color changed', event.target.value);
 
@@ -194,7 +194,7 @@
 
     dividersSize.value = wheelData.dividers.size;
 
-    dividersSize.addEventListener('change', (event) => {
+    dividersSize.addEventListener('input', (event) => {
 
         console.log('dividers size changed', event.target.value);
 
@@ -218,14 +218,26 @@
 
     document.querySelector('#show-hide-editor')
         .addEventListener('click', () => {
-            const editorElem = document.getElementById('editor');
+            const elem = document.getElementById('editor');
 
-            if (editorElem.style.display === 'block') {
-                editorElem.style.display = 'none';
+            if (elem.style.display === 'block') {
+                elem.style.display = 'none';
             } else {
-                editorElem.style.display = 'block';
+                elem.style.display = 'block';
             }
         });
+
+    document.querySelector('#show-hide-debug')
+        .addEventListener('click', () => {
+            const elem = document.getElementById('dump');
+
+            if (elem.style.display === 'block') {
+                elem.style.display = 'none';
+            } else {
+                elem.style.display = 'block';
+            }
+        });
+
 
     const pageBgColorElem = document.querySelector('#page-bg-color');
 

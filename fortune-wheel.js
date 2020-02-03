@@ -7,6 +7,7 @@ const questionTextElem = document.querySelector('#question-text');
 
 modalElem.addEventListener('click', () => {
     modalElem.style.display = 'none';
+    questionTextElem.innerHTML = 'What do you get when you cross a mentally ill loner with a society that abandons him and treats him like trash?';
 });
 
 // matter vars
@@ -176,6 +177,7 @@ document.querySelector('#stopTheWheel').addEventListener('click', () => {
 
 document.querySelector('#justATest').addEventListener('click', () => {
     modalElem.style.display = 'block';
+    showRandomQuestion();
 });
 
 document.querySelector('#renderMatter').addEventListener('click', () => {
@@ -539,6 +541,44 @@ function initPhysics() {
         constraintSpring,
         constraintWheel,
     ]);
+}
+
+// QUESTIONS
+var lastQuestionNumber = 6;
+var addQuestionButton = document.getElementById('addQuestion');
+
+function addQuestion() {
+    lastQuestionNumber++;
+
+    var div = document.createElement('div');
+    div.setAttribute('class', 'input');
+    document.getElementById('questions').appendChild(div);
+
+    var label = document.createElement('label');
+    label.setAttribute('for', 'q' + lastQuestionNumber);
+    label.innerHTML = 'Text: ';
+    div.appendChild(label);
+
+    var input = document.createElement('input');
+    input.name = 'q' + lastQuestionNumber;
+    input.id = 'q' + lastQuestionNumber;
+    input.value = 'test question ' + lastQuestionNumber;
+    div.appendChild(input);
+}
+
+addQuestionButton.addEventListener('click', () => {
+    addQuestion();
+});
+
+function showRandomQuestion() {
+    var rndNum = getRndInteger(1, lastQuestionNumber);
+    var questionText = document.querySelector('#q' + rndNum).value;
+
+    questionTextElem.innerHTML = questionText; // + '    ' + Date.now();
+}
+
+function getRndInteger(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 // setTimeout(() => {

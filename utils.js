@@ -21,6 +21,10 @@ function rgbToHex2(r, g, b) {
     return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
 }
 
+function rgbObjToHex(obj) {
+    return "#" + componentToHex(obj.r) + componentToHex(obj.g) + componentToHex(obj.b);
+}
+
 function hexToRgb(hex) {
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result ? {

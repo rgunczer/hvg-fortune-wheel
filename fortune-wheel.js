@@ -111,6 +111,14 @@ const wheelData = {
     "slices": [{ "color": "#918bc5", "text": "Sekiro" }, { "color": "#a06bd1", "text": "Nioh" }, { "color": "#4f59b9", "text": "RDR2" }, { "color": "#73719d", "text": "FarCry" }, { "color": "#6872b0", "text": "Doom" }, { "color": "#7557cc", "text": "Yakuza" }]
 };
 
+// apply TCS colors
+wheelData.slices[0].color = rgbObjToHex(TCSColors.DarkRed);
+wheelData.slices[1].color = rgbObjToHex(TCSColors.Green);
+wheelData.slices[2].color = rgbObjToHex(TCSColors.DarkPurple);
+wheelData.slices[3].color = rgbObjToHex(TCSColors.DarkOrange);
+wheelData.slices[4].color = rgbObjToHex(TCSColors.MediumPurple);
+wheelData.slices[5].color = rgbObjToHex(TCSColors.LightBlue);
+
 if (testRandomness) {
     wheelData.slices.forEach(slice => {
         slice.color = rgbToHex2(255, 255, 255);

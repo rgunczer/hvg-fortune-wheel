@@ -28,8 +28,8 @@ let drawPhysics = false;
 let testRandomness = false;
 
 const wheelSpeed = {
-    min: 3,
-    max: 7
+    min: 30,
+    max: 70
 };
 
 const dump = {};
@@ -496,20 +496,62 @@ function initPhysics() {
     let h = w * 0.024;
 
     const divider1 = Bodies.rectangle(x, y, w, h);
+    const divider11 = Bodies.rectangle(x, y, w, h);
+    const divider111 = Bodies.rectangle(x, y, w, h);
+    const divider1111 = Bodies.rectangle(x, y, w, h);
     const divider2 = Bodies.rectangle(x, y, w, h);
+    const divider22 = Bodies.rectangle(x, y, w, h);
+    const divider222 = Bodies.rectangle(x, y, w, h);
+    const divider2222 = Bodies.rectangle(x, y, w, h);
     const divider3 = Bodies.rectangle(x, y, w, h);
+    const divider33 = Bodies.rectangle(x, y, w, h);
+    const divider333 = Bodies.rectangle(x, y, w, h);
+    const divider3333 = Bodies.rectangle(x, y, w, h);
 
     let degrees = 0;
     Body.setAngle(divider1, deg2rad(degrees));
 
-    degrees += 60;
+    degrees += 15
+    Body.setAngle(divider11, deg2rad(degrees));
+
+    degrees += 15
+    Body.setAngle(divider111, deg2rad(degrees));
+
+    degrees += 15
+    Body.setAngle(divider1111, deg2rad(degrees));
+
+
+    degrees += 15;
     Body.setAngle(divider2, deg2rad(degrees));
 
-    degrees += 60;
+    degrees += 15;
+    Body.setAngle(divider22, deg2rad(degrees));
+
+    degrees += 15;
+    Body.setAngle(divider222, deg2rad(degrees));
+
+    degrees += 15;
+    Body.setAngle(divider2222, deg2rad(degrees));
+
+
+    degrees += 15;
     Body.setAngle(divider3, deg2rad(degrees));
 
+    degrees += 15;
+    Body.setAngle(divider33, deg2rad(degrees));
+
+    degrees += 15;
+    Body.setAngle(divider333, deg2rad(degrees));
+
+    degrees += 15;
+    Body.setAngle(divider3333, deg2rad(degrees));
+
     wheelBody = Body.create({
-        parts: [divider1, divider2, divider3]
+        parts: [
+            divider1, divider11, divider111, divider1111,
+            divider2, divider22, divider222, divider2222,
+            divider3, divider33, divider333, divider3333
+        ]
     });
 
     const constraintWheel = Constraint.create({
@@ -541,6 +583,10 @@ function initPhysics() {
         constraintSpring,
         constraintWheel,
     ]);
+
+    engine.world.positionIterations = 20;
+    engine.world.velocityIterations = 20;
+
 }
 
 // QUESTIONS

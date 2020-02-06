@@ -1,206 +1,146 @@
 
 (function () {
 
-    for (let i = 0; i < wheelData.slices.length; ++i) {
+    [
+        { name: 'color', event: 'change' },
+        { name: 'text', event: 'input' }
+    ].forEach(obj => {
 
-        const elemColorPicker = document.querySelector('#slice-' + i + '-color');
+        for (let i = 0; i < wheelData.slices.length; ++i) {
 
-        if (wheelData.slices[i].color.startsWith('#')) {
-            elemColorPicker.value = wheelData.slices[i].color;
-        } else {
-            elemColorPicker.value = rgbToHex(wheelData.slices[i].color);
+
+            const elem = document.querySelector(`#slice-${i}-${obj.name}`);
+
+            if (obj.name === 'color') {
+                if (wheelData.slices[i][obj.name].startsWith('#')) {
+                    elem.value = wheelData.slices[i][obj.name];
+                } else {
+                    elem.value = rgbToHex(wheelData.slices[i][obj.name]);
+                }
+            } else {
+                elem.value = wheelData.slices[i][obj.name];
+            }
+
+            elem.addEventListener(obj.event, (event) => {
+                console.log(`slice [${i}] ${obj.name} changed`, event.target.value);
+                wheelData.slices[i][obj.name] = event.target.value;
+                draw();
+            });
+
         }
 
-        elemColorPicker.addEventListener('change', (event) => {
+    });
 
-            console.log('slice ' + i + ' color changed', event.target.value);
+    const colorSizeArray = [
+        { name: 'color', event: 'change' },
+        { name: 'size', event: 'input' }
+    ];
 
-            wheelData.slices[i].color = event.target.value;
+    colorSizeArray.forEach(obj => {
 
+        const elem = document.querySelector(`#outer-ring-${obj.name}`);
+        elem.value = wheelData.outerRing[obj.name];
+
+        elem.addEventListener(obj.event, (event) => {
+            console.log(`outer ring ${obj.name} changed`, event.target.value);
+            wheelData.outerRing[obj.name] = event.target.value;
             draw();
         });
 
-        const elemText = document.querySelector('#slice-' + i + '-text');
+    });
 
-        elemText.value = wheelData.slices[i].text;
+    [
+        { name: 'size', event: 'input' },
+        { name: 'offset', event: 'input' },
+    ].forEach(obj => {
 
-        elemText.addEventListener('input', (event) => {
+        const elem = document.querySelector(`#slicesimages-${obj.name}`);
+        elem.value = parseInt(wheelData.slicesimages[obj.name], 10);
 
-            console.log('slice ' + i + ' text changed', event.target.value);
-
-            wheelData.slices[i].text = event.target.value;
-
+        elem.addEventListener(obj.event, (event) => {
+            console.log(`slicesimages ${obj.name} changed`, event.target.value);
+            wheelData.slicesimages[obj.name] = parseInt(event.target.value, 10);
             draw();
         });
-    }
-
-    const elemOuterRingColor = document.querySelector('#outer-ring-color');
-
-    elemOuterRingColor.value = wheelData.outerRing.color;
-
-    elemOuterRingColor.addEventListener('change', (event) => {
-
-        console.log('outer ring color changed', event.target.value);
-
-        wheelData.outerRing.color = event.target.value;
-
-        draw();
 
     });
 
-    const elemOuterRingSize = document.querySelector('#outer-ring-size');
+    [
+        ...colorSizeArray,
+        { name: 'offset', event: 'input' }
+    ].forEach(obj => {
 
-    elemOuterRingSize.value = wheelData.outerRing.size;
+        const elem = document.querySelector('#text-' + obj.name);
+        elem.value = wheelData.text[obj.name];
 
-    elemOuterRingSize.addEventListener('input', (event) => {
+        elem.addEventListener(obj.event, (event) => {
+            console.log(`text ${obj.name} changed`, event.target.value);
+            wheelData.text[obj.name] = elem.value;
+            draw();
+        });
 
-        console.log('outer ring size changed', event.target.value);
-
-        wheelData.outerRing.size = event.target.value;
-
-        draw();
     });
 
+    ['color', 'time'].forEach(key => {
+        const elem = document.querySelector('#selected-slice-flash-' + key);
+        elem.value = wheelData.flashing[key];
 
-    const elemTextColor = document.querySelector('#text-color');
-
-    elemTextColor.value = wheelData.text.color;
-
-    elemTextColor.addEventListener('change', (event) => {
-
-        console.log('text color changed', event.target.value);
-
-        wheelData.text.color = elemTextColor.value;
-
-        draw();
+        elem.addEventListener('change', (event) => {
+            console.log(`selected slice flash ${key} changed`, event.target.value);
+            wheelData.flashing[key] = elem.value;
+            draw();
+        });
     });
 
-    const elemTextSize = document.querySelector('#text-size');
+    ['min', 'max'].forEach(key => {
+        const elem = document.querySelector(`#wheel-${key}-speed`);
+        if (elem) {
+            elem.value = wheelSpeed[key];
 
-    elemTextSize.value = wheelData.text.size;
-
-    elemTextSize.addEventListener('input', (event) => {
-
-        console.log('text size changed', event.target.value);
-
-        wheelData.text.size = elemTextSize.value;
-
-        draw();
+            elem.addEventListener('change', (event) => {
+                console.log('wheel Speed ' + key + ' changed', event.target.checked);
+                wheelSpeed[key] = elem.value;
+            });
+        }
     });
 
-    const elemTextOffset = document.querySelector('#text-offset');
+    colorSizeArray.forEach(obj => {
 
-    elemTextOffset.value = wheelData.text.offsetFromCenter;
+        const elem = document.querySelector('#center-' + obj.name);
+        elem.value = wheelData.center[obj.name];
 
-    elemTextOffset.addEventListener('input', (event) => {
+        elem.addEventListener(obj.event, (event) => {
+            console.log(`center ${obj.name} changed`, event.target.value);
+            wheelData.center[obj.name] = elem.value;
+            draw();
+        });
 
-        console.log('text offset changed', event.target.value);
-
-        wheelData.text.offsetFromCenter = elemTextOffset.value;
-
-        draw();
     });
 
-    const selectedSliceFlashColor = document.querySelector('#selected-slice-flash-color');
+    colorSizeArray.forEach(obj => {
 
-    selectedSliceFlashColor.value = wheelData.flashing.color;
+        const elem = document.querySelector('#dividers-' + obj.name);
+        elem.value = wheelData.dividers[obj.name];
 
-    selectedSliceFlashColor.addEventListener('change', (event) => {
+        elem.addEventListener(obj.event, (event) => {
+            console.log(`dividers ${obj.name} changed`, event.target.value);
+            wheelData.dividers[obj.name] = elem.value;
+            draw();
+        });
 
-        console.log('selected slice flash color changed', event.target.value);
-
-        wheelData.flashing.color = selectedSliceFlashColor.value;
-
-        draw();
     });
 
-    const flashingTime = document.querySelector('#selected-slice-flash-time');
+    colorSizeArray.forEach(obj => {
 
-    flashingTime.value = wheelData.flashing.time;
+        const elem = document.querySelector('#inner-ring-' + obj.name);
+        elem.value = wheelData.innerRing[obj.name];
 
-    flashingTime.addEventListener('change', (event) => {
+        elem.addEventListener(obj.event, (event) => {
+            console.log(`inner ring ${obj.name} changed`, event.target.value);
+            wheelData.innerRing[obj.name] = elem.value;
+            draw();
+        });
 
-        console.log('selected slice flash time changed', event.target.value);
-
-        wheelData.flashing.time = flashingTime.value;
-    });
-
-    const centerColor = document.querySelector('#center-color');
-
-    centerColor.value = wheelData.center.color;
-
-    centerColor.addEventListener('change', (event) => {
-
-        console.log('center color changed', event.target.value);
-
-        wheelData.center.color = centerColor.value;
-
-        draw();
-    });
-
-    const centerSize = document.querySelector('#center-size');
-
-    centerSize.value = wheelData.center.size;
-
-    centerSize.addEventListener('input', (event) => {
-
-        console.log('center color changed', event.target.value);
-
-        wheelData.center.size = centerSize.value;
-
-        draw();
-    });
-
-    const dividersColor = document.querySelector('#dividers-color');
-
-    dividersColor.value = wheelData.dividers.color;
-
-    dividersColor.addEventListener('change', (event) => {
-
-        console.log('dividers color changed', event.target.value);
-
-        wheelData.dividers.color = dividersColor.value;
-
-        draw();
-    });
-
-    const innerRingColor = document.querySelector('#inner-ring-color');
-
-    innerRingColor.value = wheelData.innerRing.color;
-
-    innerRingColor.addEventListener('change', (event) => {
-
-        console.log('inner ring color changed', event.target.value);
-
-        wheelData.innerRing.color = innerRingColor.value;
-
-        draw();
-    });
-
-    const innerRingSize = document.querySelector('#inner-ring-size');
-
-    innerRingSize.value = wheelData.innerRing.size;
-
-    innerRingSize.addEventListener('input', (event) => {
-
-        console.log('inner ring color changed', event.target.value);
-
-        wheelData.innerRing.size = innerRingSize.value;
-
-        draw();
-    });
-
-    const dividersSize = document.querySelector('#dividers-size');
-
-    dividersSize.value = wheelData.dividers.size;
-
-    dividersSize.addEventListener('input', (event) => {
-
-        console.log('dividers size changed', event.target.value);
-
-        wheelData.dividers.size = dividersSize.value;
-
-        draw();
     });
 
     Object.keys(drawFlags).forEach(key => {
@@ -271,18 +211,6 @@
         wheelData.slices.forEach(slice => {
             slice.color = rgbToHex2(255, 255, 255);
         });
-    });
-
-    ['min', 'max'].forEach(key => {
-        const elem = document.querySelector(`#wheel-${key}-speed`);
-        if (elem) {
-            elem.value = wheelSpeed[key];
-
-            elem.addEventListener('change', (event) => {
-                console.log('wheel Speed ' + key + ' changed', event.target.checked);
-                wheelSpeed[key] = elem.value;
-            });
-        }
     });
 
 })();

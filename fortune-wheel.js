@@ -37,7 +37,9 @@ const dump = {};
 const drawFlags = {
     slices: true,
     dividers: true,
+    subDividers: true,
     texts: true,
+    slicesimages: true,
     innerRing: true,
     center: true,
     outerRing: true,
@@ -92,32 +94,31 @@ const flasher = {
     }
 };
 
-const imageData = {
-    tcs: {
-        fileName: 'tcs-logo',
-    },
-    tata: {
-        fileName: 'tcs-tata',
-    }
-};
-
 const wheelData = {
     "flashing": { "color": "#ffff00", "time": 100 },
     "dividers": { "color": "#004080", "size": "7" },
-    "text": { "color": "#c7c4ee", "size": "60", "offsetFromCenter": "458" },
-    "center": { "color": "#7d7dff", "size": "12" },
-    "innerRing": { "color": "#7054b8", "size": "13" },
-    "outerRing": { "color": "#5a349a", "size": 17 },
-    "slices": [{ "color": "#918bc5", "text": "Sekiro" }, { "color": "#a06bd1", "text": "Nioh" }, { "color": "#4f59b9", "text": "RDR2" }, { "color": "#73719d", "text": "FarCry" }, { "color": "#6872b0", "text": "Doom" }, { "color": "#7557cc", "text": "Yakuza" }]
+    "text": { "color": "#c7c4ee", "size": "60", "offset": "458" },
+    "slicesimages": { "size": "30", "offset": "20" },
+    "center": { "color": "#7d7dff", "size": "28" },
+    "innerRing": { "color": "#7054b8", "size": "28" },
+    "outerRing": { "color": "#5a349a", "size": 30 },
+    "slices": [
+        { "color": "#918bc5", "text": "Life", "icon": "life" },
+        { "color": "#7557cc", "text": "Internship", "icon": "internship" },
+        { "color": "#a06bd1", "text": "Corporate", "icon": "corporate" },
+        { "color": "#73719d", "text": "Finance", "icon": "finance" },
+        { "color": "#4f59b9", "text": "IT Service Desk", "icon": "itservicedesk" },
+        { "color": "#6872b0", "text": "IT Services", "icon": "itservices" },
+    ]
 };
 
 // apply TCS colors
 wheelData.slices[0].color = rgbObjToHex(TCSColors.DarkRed);
-wheelData.slices[1].color = rgbObjToHex(TCSColors.Green);
-wheelData.slices[2].color = rgbObjToHex(TCSColors.DarkPurple);
+wheelData.slices[1].color = rgbObjToHex(TCSColors.LightPurple);
+wheelData.slices[2].color = rgbObjToHex(TCSColors.MediumPurple);
 wheelData.slices[3].color = rgbObjToHex(TCSColors.DarkOrange);
-wheelData.slices[4].color = rgbObjToHex(TCSColors.MediumPurple);
-wheelData.slices[5].color = rgbObjToHex(TCSColors.LightBlue);
+wheelData.slices[4].color = rgbObjToHex(TCSColors.DarkPurple);
+wheelData.slices[5].color = rgbObjToHex(TCSColors.DarkBlue);
 
 if (testRandomness) {
     wheelData.slices.forEach(slice => {
@@ -266,6 +267,60 @@ function drawDividers(params) {
     }
 }
 
+function drawSubDividers(params) {
+    let cx = canvas.width / 2;
+    let cy = canvas.height / 2;
+    let sliceDegree = 360.0 / wheelData.slices.length;
+    let sliceAngle = deg2rad(sliceDegree);
+
+    context.shadowColor = 'black';
+    context.shadowBlur = 14;
+    context.shadowOffsetX = 0;
+    context.shadowOffsetY = 0;
+
+    context.lineWidth = 6;
+    // context.strokeStyle = 'lightblue';
+    context.fillStyle = 'lightblue';
+
+    for (let i = 0; i < wheelData.slices.length; ++i) {
+
+        context.save();
+
+        context.setTransform(1, 0, 0, 1, 0, 0);
+        context.translate(cx, cy);
+        context.rotate(wheelBody.angle);
+        context.rotate((sliceAngle * i) - sliceAngle * 0.5);
+
+        context.beginPath();
+        context.arc(0, params.radius, 16, 0, Math.PI * 2);
+        context.fill();
+        context.stroke();
+
+        context.restore();
+
+        for (let j = 1; j <= 3; ++j) {
+
+            context.save();
+
+            context.lineWidth = 4;
+
+            context.setTransform(1, 0, 0, 1, 0, 0);
+            context.translate(cx, cy);
+            context.rotate(wheelBody.angle);
+            context.rotate((sliceAngle * i) - sliceAngle * 0.5);
+            context.rotate(deg2rad(j * 15));
+
+            context.beginPath();
+            context.arc(0, params.radius, 8, 0, Math.PI * 2);
+            // context.stroke();
+            context.fill();
+
+            context.restore();
+        }
+
+    }
+}
+
 function drawOuterRing(params) {
     context.shadowColor = 'black';
     context.shadowBlur = 20;
@@ -326,9 +381,35 @@ function drawText(params) {
         context.rotate(wheelBody.angle);
         context.rotate((sliceAngle - sliceAngle / 2.0) + sliceAngle * i);
         context.textBaseline = 'middle';
-        context.fillText(wheelData.slices[i].text, params.radius * wheelData.text.offsetFromCenter * 0.001, 0);
+        context.fillText(wheelData.slices[i].text, params.radius * wheelData.text.offset * 0.001, 0);
 
-        context.drawImage(imageData.tcs.img, 200, 0, 120, 120);
+        context.restore();
+    }
+}
+
+function drawSlicesImages(params) {
+    let sliceDegree = 360.0 / wheelData.slices.length;
+    let sliceAngle = deg2rad(sliceDegree);
+
+    const x = wheelBody.position.x;
+    const y = wheelBody.position.y;
+
+    for (let i = 0; i < wheelData.slices.length; ++i) {
+        context.save();
+
+        context.shadowColor = 'black';
+        context.shadowBlur = 30;
+        context.shadowOffsetX = 0;
+        context.shadowOffsetY = 0;
+
+        context.translate(x, y);
+        context.rotate(wheelBody.angle);
+        context.rotate((sliceAngle - sliceAngle / 2.0) + sliceAngle * i);
+
+        const image = imageData[wheelData.slices[i].icon].img;
+        const size = params.radius * 0.2 * wheelData.slicesimages.size / 20;
+        const xOffset = params.radius * 0.5 * wheelData.slicesimages.offset / 20;
+        context.drawImage(image, xOffset - size / 2, 0 - size / 2, size, size);
 
         context.restore();
     }
@@ -385,8 +466,8 @@ function drawDebugCollisionCircles(params) {
 }
 
 function drawCenterImage(params) {
-    const image = imageData.tata.img;
-    const scale = params.radius * 0.0003;
+    const image = imageData.tcs.img;
+    const scale = params.radius * 0.0009;
 
     const w = image.width * scale;
     const h = image.height * scale;
@@ -417,9 +498,11 @@ function draw() {
     drawFlags.slices && drawTask(params, drawSlices);
     drawFlags.dividers && drawTask(params, drawDividers);
     drawFlags.texts && drawTask(params, drawText);
+    drawFlags.slicesimages && drawTask(params, drawSlicesImages);
     drawFlags.innerRing && drawTask(params, drawInnerRing);
     drawFlags.center && drawTask(params, drawCenter);
     drawFlags.outerRing && drawTask(params, drawOuterRing);
+    drawFlags.subDividers && drawTask(params, drawSubDividers);
     drawFlags.tongue && drawTask(params, drawTongue);
     drawTask(params, drawCenterImage);
     drawFlags.collisionCircles && drawTask(params, drawDebugCollisionCircles);

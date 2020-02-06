@@ -46,12 +46,14 @@
                 <label>Settings: </label>
                 <button id="save-settings">Save</button>
                 <button id="load-settings">Load</button>
+
                 <hr>
                 <h4>Page</h4>
                 <div class="input">
                     <label for="page-bg-color">Background Color:</label>
                     <input type="color" id="page-bg-color" name="page-bg-color" value="#ffffff">
                 </div>
+
                 <hr>
                 <h4>Wheel</h4>
                 <div class="input">
@@ -72,6 +74,7 @@
                     <label for="wheel-max-speed">Max Speed:</label>
                     <input type="range" id="wheel-max-speed" name="wheel-max-speed" min="10" max="100">
                 </div>
+
                 <hr>
                 <h4>Slices
                     <input type="checkbox" id="draw-slices" name="draw-slices">
@@ -112,48 +115,20 @@
                     <label for="slice-5-color">Text:</label>
                     <input type="text" id="slice-5-text" name="slice-5-text" value="">
                 </div>
+
                 <hr>
-                <h4>Dividers
-                    <input type="checkbox" id="draw-dividers" name="draw-dividers">
+                <h4>Slices Images
+                    <input type="checkbox" id="draw-slicesimages" name="draw-slicesimages">
                 </h4>
                 <div class="input">
-                    <label for="dividers-color">Color:</label>
-                    <input type="color" id="dividers-color" name="dividers-color" value="#ff0000">
-                    <label for="dividers-size">Size:</label>
-                    <input type="range" id="dividers-size" name="dividers-size" min="0" max="100">
+                    <label for="slicesimages-size">Size:</label>
+                    <input type="range" id="slicesimages-size" name="slicesimages-size" min="0" max="100">
+                    <label for="slicesimages-offset">Offset:</label>
+                    <input type="range" id="slicesimages-offset" name="slicesimages-offset" min="0" max="100">
                 </div>
+
                 <hr>
-                <h4>Center
-                    <input type="checkbox" id="draw-center" name="draw-center">
-                </h4>
-                <div class="input">
-                    <label for="center-color">Color:</label>
-                    <input type="color" id="center-color" name="center-color" value="#ff0000">
-                    <label for="center-size">Size:</label>
-                    <input type="range" id="center-size" name="center-size" min="0" max="60">
-                </div>
-                <hr>
-                <h4>Inner Ring
-                    <input type="checkbox" id="draw-inner-ring" name="draw-inner-ring">
-                </h4>
-                <div class="input">
-                    <label for="inner-ring-color">Color:</label>
-                    <input type="color" id="inner-ring-color" name="inner-ring-color" value="#ff0000">
-                    <label for="inner-ring-size">Size:</label>
-                    <input type="range" id="inner-ring-size" name="inner-ring-size" min="0" max="60">
-                </div>
-                <hr>
-                <h4>Outer Ring
-                    <input type="checkbox" id="draw-outer-ring" name="draw-outer-ring">
-                </h4>
-                <div class="input">
-                    <label for="outer-ring-color">Color:</label>
-                    <input type="color" id="outer-ring-color" name="outer-ring-color" value="#ff0000">
-                    <label for="outer-ring-size">Size:</label>
-                    <input type="range" id="outer-ring-size" name="outer-ring-size" min="0" max="60">
-                </div>
-                <hr>
-                <h4>Text
+                <h4>Slices Texts
                     <input type="checkbox" id="draw-texts" name="draw-texts">
                 </h4>
                 <div class="input">
@@ -166,6 +141,51 @@
                     <label for="text-offset">Offset:</label>
                     <input type="range" id="text-offset" name="text-offset" min="60" max="600">
                 </div>
+
+                <hr>
+                <h4>Dividers
+                    <input type="checkbox" id="draw-dividers" name="draw-dividers">
+                </h4>
+                <div class="input">
+                    <label for="dividers-color">Color:</label>
+                    <input type="color" id="dividers-color" name="dividers-color" value="#ff0000">
+                    <label for="dividers-size">Size:</label>
+                    <input type="range" id="dividers-size" name="dividers-size" min="0" max="100">
+                </div>
+
+                <hr>
+                <h4>Center
+                    <input type="checkbox" id="draw-center" name="draw-center">
+                </h4>
+                <div class="input">
+                    <label for="center-color">Color:</label>
+                    <input type="color" id="center-color" name="center-color" value="#ff0000">
+                    <label for="center-size">Size:</label>
+                    <input type="range" id="center-size" name="center-size" min="0" max="60">
+                </div>
+
+                <hr>
+                <h4>Inner Ring
+                    <input type="checkbox" id="draw-inner-ring" name="draw-inner-ring">
+                </h4>
+                <div class="input">
+                    <label for="inner-ring-color">Color:</label>
+                    <input type="color" id="inner-ring-color" name="inner-ring-color" value="#ff0000">
+                    <label for="inner-ring-size">Size:</label>
+                    <input type="range" id="inner-ring-size" name="inner-ring-size" min="0" max="60">
+                </div>
+
+                <hr>
+                <h4>Outer Ring
+                    <input type="checkbox" id="draw-outer-ring" name="draw-outer-ring">
+                </h4>
+                <div class="input">
+                    <label for="outer-ring-color">Color:</label>
+                    <input type="color" id="outer-ring-color" name="outer-ring-color" value="#ff0000">
+                    <label for="outer-ring-size">Size:</label>
+                    <input type="range" id="outer-ring-size" name="outer-ring-size" min="0" max="60">
+                </div>
+
                 <hr>
                 <h4>Draw Flags</h4>
                 <div class="input">
@@ -175,6 +195,7 @@
                     <label for="draw-collision-circles">Collision Circles:</label>
                     <input type="checkbox" id="draw-collision-circles" name="draw-collision-circles">
                 </div>
+
                 <hr>
                 <h4>Questions</h4>
                 <div id="questions">
@@ -211,6 +232,7 @@
     </div>
 
     <script src="colors.js"></script>
+    <script src="images.js"></script>
     <script src="fortune-wheel.js"></script>
     <script src="editor.js"></script>
 </body>

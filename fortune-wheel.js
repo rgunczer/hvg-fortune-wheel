@@ -27,25 +27,7 @@ let spinning = false;
 let drawPhysics = false;
 let testRandomness = false;
 
-const wheelSpeed = {
-    min: 30,
-    max: 70
-};
-
 const dump = {};
-
-const drawFlags = {
-    slices: true,
-    dividers: true,
-    subDividers: true,
-    texts: true,
-    slicesimages: true,
-    innerRing: true,
-    center: true,
-    outerRing: true,
-    tongue: true,
-    collisionCircles: false,
-};
 
 const flasher = {
     index: -1,
@@ -62,11 +44,13 @@ const flasher = {
         this.counter++;
 
         if (this.counter > wheelData.flashing.time) {
-            questionTitleElem.innerHTML = wheelData.slices[this.index].text;
+            const slices = wheelData.slices;
+
+            questionTitleElem.innerHTML = slices[this.index].text;
             modalElem.style.display = 'block';
 
             if (testRandomness) {
-                const color = hexToRgb(wheelData.slices[this.index].color);
+                const color = hexToRgb(slices[this.index].color);
 
                 color.r -= 30;
 
@@ -74,8 +58,8 @@ const flasher = {
                     color.r = 0;
                 }
 
-                wheelData.slices[this.index].color = rgbToHex2(color.r, color.r, color.r);
-                console.log(wheelData.slices[this.index].color);
+                slices[this.index].color = rgbToHex2(color.r, color.r, color.r);
+                console.log(slices[this.index].color);
             }
 
             this.setup();
@@ -94,33 +78,6 @@ const flasher = {
     }
 };
 
-const wheelData = {
-    "flashing": { "color": "#ffff00", "time": 100 },
-    "dividers": { "color": "#004080", "size": "7" },
-    "text": { "color": "#c7c4ee", "size": "30", "offset": "438" },
-    "slicesimages": { "size": "16", "offset": "15" },
-    "center": { "color": "#7d7dff", "size": "28" },
-    "centerLogo": { "scale": 16 },
-    "innerRing": { "color": "#7054b8", "size": "28" },
-    "outerRing": { "color": "#5a349a", "size": 30 },
-    "slices": [
-        { "color": "#918bc5", "text": "Life", "icon": "life" },
-        { "color": "#7557cc", "text": "Internship", "icon": "internship" },
-        { "color": "#a06bd1", "text": "Corporate", "icon": "corporate" },
-        { "color": "#73719d", "text": "Finance", "icon": "finance" },
-        { "color": "#4f59b9", "text": "Service Desk", "icon": "itservicedesk" },
-        { "color": "#6872b0", "text": "IT Services", "icon": "itservices" },
-    ]
-};
-
-// apply TCS colors
-wheelData.slices[0].color = rgbObjToHex(TCSColors.DarkRed);
-wheelData.slices[1].color = rgbObjToHex(TCSColors.LightPurple);
-wheelData.slices[2].color = rgbObjToHex(TCSColors.MediumPurple);
-wheelData.slices[3].color = rgbObjToHex(TCSColors.DarkOrange);
-wheelData.slices[4].color = rgbObjToHex(TCSColors.DarkPurple);
-wheelData.slices[5].color = rgbObjToHex(TCSColors.DarkBlue);
-
 if (testRandomness) {
     wheelData.slices.forEach(slice => {
         slice.color = rgbToHex2(255, 255, 255);
@@ -138,23 +95,30 @@ function setCanvasSize() {
 }
 
 function loadImages() {
-    const keys = Object.keys(imageData);
-    let count = 0;
+    const imagesDataKeys = Object.keys(imagesData);
+    let loadedImageCount = 0;
 
     const onload = () => {
-        console.log('image loaded...');
-        if (++count === keys.length) {
-            initPhysics();
-            animRequestId = window.requestAnimationFrame(animate);
+        console.log('image loaded');
+        if (++loadedImageCount === imagesDataKeys.length) {
+            console.log('all images loaded, begin...');
+            begin();
         }
     }
 
-    keys.forEach(key => {
-        console.log(`loading [${imageData[key].fileName}] ...`);
-        imageData[key].img = new Image();
-        imageData[key].img.src = `./assets/${imageData[key].fileName}.png`;
-        imageData[key].img.onload = onload
+    imagesDataKeys.forEach(key => {
+        const imageObj = imagesData[key];
+        console.log(`loading [${imageObj.fileName}] image...`);
+        imageObj.img = new Image();
+        imageObj.img.src = `./assets/${imageObj.fileName}.png`;
+        imageObj.img.onload = onload
     });
+}
+
+function begin() {
+    console.log('begin');
+    initPhysics();
+    animRequestId = window.requestAnimationFrame(animate);
 }
 
 window.addEventListener('resize', () => {
@@ -168,8 +132,8 @@ document.querySelector('#spinTheWheel').addEventListener('click', () => {
     spinning = true;
     flasher.setup();
 
-    const speedMin = parseInt(wheelSpeed.min, 10);
-    const speedMax = parseInt(wheelSpeed.max, 10);
+    const speedMin = toInt(wheelData.speed.min, 10);
+    const speedMax = toInt(wheelData.speed.max, 10);
     const velocity = getRandom(speedMin, speedMax);
     dump.min = speedMin;
     dump.max = speedMax;
@@ -215,24 +179,27 @@ function animate() {
     window.requestAnimationFrame(animate);
 }
 
-function drawTask(params, taskFn) {
+function drawTask(params, objToDraw, taskFn) {
     context.save();
-    taskFn(params);
+    taskFn(params, objToDraw);
     context.restore();
 }
 
 function drawSlices(params) {
-    let sliceDegree = 360.0 / wheelData.slices.length;
+    const slices = wheelData.slices;
+
+    let sliceDegree = 360.0 / slices.length;
 
     context.translate(wheelBody.position.x, wheelBody.position.y);
     context.rotate(wheelBody.angle);
 
-    for (let i = 0; i < wheelData.slices.length; ++i) {
+    for (let i = 0; i < slices.length; ++i) {
+        context.fillStyle = slices[i].color;
+
         context.beginPath();
         context.moveTo(0, 0);
         context.arc(0, 0, params.radius, deg2rad(sliceDegree * i), deg2rad(sliceDegree + sliceDegree * i));
         context.lineTo(0, 0);
-        context.fillStyle = wheelData.slices[i].color;
 
         if (flasher.index === i) {
             context.fillStyle = flasher.update(context.fillStyle);
@@ -242,23 +209,19 @@ function drawSlices(params) {
     }
 }
 
-function drawDividers(params) {
-    let cx = canvas.width / 2;
-    let cy = canvas.height / 2;
-    let sliceDegree = 360.0 / wheelData.slices.length;
+function drawDividers(params, obj) {
+    const slices = wheelData.slices;
+    let sliceDegree = 360.0 / slices.length;
     let sliceAngle = deg2rad(sliceDegree);
 
-    context.shadowColor = 'black';
-    context.shadowBlur = 20;
-    context.shadowOffsetX = 0;
-    context.shadowOffsetY = 0;
+    applyShadowSettings(obj);
 
-    context.lineWidth = wheelData.dividers.size;
-    context.strokeStyle = wheelData.dividers.color;
+    context.lineWidth = obj.size;
+    context.strokeStyle = obj.color;
 
-    for (let i = 0; i < wheelData.slices.length; ++i) {
+    for (let i = 0; i < slices.length; ++i) {
         context.setTransform(1, 0, 0, 1, 0, 0);
-        context.translate(cx, cy);
+        context.translate(wheelBody.position.x, wheelBody.position.y);
         context.rotate(wheelBody.angle);
         context.rotate((sliceAngle * i) - sliceAngle * 0.5);
 
@@ -269,22 +232,20 @@ function drawDividers(params) {
     }
 }
 
-function drawSubDividers(params) {
+function drawRodsMain(params, obj) {
+    const slices = wheelData.slices;
     let cx = canvas.width / 2;
     let cy = canvas.height / 2;
-    let sliceDegree = 360.0 / wheelData.slices.length;
+    let sliceDegree = 360.0 / slices.length;
     let sliceAngle = deg2rad(sliceDegree);
 
-    context.shadowColor = 'black';
-    context.shadowBlur = 14;
-    context.shadowOffsetX = 0;
-    context.shadowOffsetY = 0;
+    applyShadowSettings(obj);
 
     context.lineWidth = 6;
     // context.strokeStyle = 'lightblue';
-    context.fillStyle = 'lightblue';
+    context.fillStyle = obj.color;
 
-    for (let i = 0; i < wheelData.slices.length; ++i) {
+    for (let i = 0; i < slices.length; ++i) {
 
         context.save();
 
@@ -294,17 +255,57 @@ function drawSubDividers(params) {
         context.rotate((sliceAngle * i) - sliceAngle * 0.5);
 
         context.beginPath();
-        context.arc(0, params.radius, 16, 0, Math.PI * 2);
+        context.arc(0, params.radius, 16 * obj.size, 0, Math.PI * 2);
         context.fill();
-        context.stroke();
+        // context.stroke();
 
         context.restore();
+
+        // for (let j = 1; j <= 3; ++j) {
+
+        //     context.save();
+
+        //     context.lineWidth = 4;
+
+        //     context.setTransform(1, 0, 0, 1, 0, 0);
+        //     context.translate(cx, cy);
+        //     context.rotate(wheelBody.angle);
+        //     context.rotate((sliceAngle * i) - sliceAngle * 0.5);
+        //     context.rotate(deg2rad(j * 15));
+
+        //     context.beginPath();
+        //     context.arc(0, params.radius, 8, 0, Math.PI * 2);
+        //     // context.stroke();
+        //     context.fill();
+
+        //     context.restore();
+        // }
+
+    }
+}
+
+function drawRodsSub(params, obj) {
+    const slices = wheelData.slices;
+    let cx = canvas.width / 2;
+    let cy = canvas.height / 2;
+    let sliceDegree = 360.0 / slices.length;
+    let sliceAngle = deg2rad(sliceDegree);
+
+    applyShadowSettings(obj);
+
+    context.lineWidth = 6;
+    // context.strokeStyle = 'lightblue';
+    context.fillStyle = obj.color;
+
+    for (let i = 0; i < slices.length; ++i) {
 
         for (let j = 1; j <= 3; ++j) {
 
             context.save();
 
             context.lineWidth = 4;
+
+            applyShadowSettings(obj);
 
             context.setTransform(1, 0, 0, 1, 0, 0);
             context.translate(cx, cy);
@@ -313,7 +314,7 @@ function drawSubDividers(params) {
             context.rotate(deg2rad(j * 15));
 
             context.beginPath();
-            context.arc(0, params.radius, 8, 0, Math.PI * 2);
+            context.arc(0, params.radius, 8 * obj.size, 0, Math.PI * 2);
             // context.stroke();
             context.fill();
 
@@ -323,101 +324,85 @@ function drawSubDividers(params) {
     }
 }
 
-function drawOuterRing(params) {
-    context.shadowColor = 'black';
-    context.shadowBlur = 20;
-    context.shadowOffsetX = 0;
-    context.shadowOffsetY = 0;
+function drawOuterRing(params, obj) {
+    applyShadowSettings(obj);
 
-    context.strokeStyle = wheelData.outerRing.color;
-    context.lineWidth = wheelData.outerRing.size;
+    context.strokeStyle = obj.color;
+    context.lineWidth = obj.size;
     context.beginPath();
     context.arc(wheelBody.position.x, wheelBody.position.y, params.radius, 0, -Math.PI * 2);
     context.stroke();
 }
 
-function drawInnerRing(params) {
-    context.shadowColor = 'black';
-    context.shadowBlur = 10;
-    context.shadowOffsetX = 0;
-    context.shadowOffsetY = 0;
+function drawInnerRing(params, obj) {
+    applyShadowSettings(obj);
 
-    context.fillStyle = wheelData.innerRing.color;
+    context.fillStyle = obj.color;
+
     context.beginPath();
-
     context.moveTo(wheelBody.position.x, wheelBody.position.y);
-    context.arc(wheelBody.position.x, wheelBody.position.y, params.radius * parseInt(wheelData.innerRing.size) * 0.01, 0, Math.PI * 2);
+    context.arc(wheelBody.position.x, wheelBody.position.y, params.radius * toInt(obj.size) * 0.01, 0, Math.PI * 2);
     context.fill();
 }
 
-function drawCenter(params) {
-    const wh = params.radius * 0.25;
+function drawCenter(params, obj) {
+    applyShadowSettings(obj);
 
-    context.fillStyle = wheelData.center.color;
+    context.fillStyle = obj.color;
     context.beginPath();
     context.moveTo(wheelBody.position.x, wheelBody.position.y);
-    context.arc(wheelBody.position.x, wheelBody.position.y, params.radius * parseInt(wheelData.center.size) * 0.01, 0, Math.PI * 2);
+    context.arc(wheelBody.position.x, wheelBody.position.y, params.radius * toInt(obj.size) * 0.01, 0, Math.PI * 2);
     context.fill();
 }
 
-function drawText(params) {
-    let sliceDegree = 360.0 / wheelData.slices.length;
+function drawText(params, obj) {
+    const slices = wheelData.slices;
+    let sliceDegree = 360.0 / slices.length;
     let sliceAngle = deg2rad(sliceDegree);
 
-    context.fillStyle = wheelData.text.color;
-    context.font = wheelData.text.size + 'px Lobster';
-    // context.font = wheelData.text.size + 'px Permanent Marker';
+    context.fillStyle = obj.color;
+    // context.font = wheelData.texts.size + 'px Lobster';
+    context.font = obj.size + 'px Permanent Marker';
 
-    const x = wheelBody.position.x;
-    const y = wheelBody.position.y;
-
-    for (let i = 0; i < wheelData.slices.length; ++i) {
+    for (let i = 0; i < slices.length; ++i) {
         context.save();
 
-        context.shadowColor = 'black';
-        context.shadowBlur = 10;
-        context.shadowOffsetX = 0;
-        context.shadowOffsetY = 0;
+        applyShadowSettings(obj)
 
-        context.translate(x, y);
+        context.translate(wheelBody.position.x, wheelBody.position.y);
         context.rotate(wheelBody.angle);
         context.rotate((sliceAngle - sliceAngle / 2.0) + sliceAngle * i);
         context.textBaseline = 'middle';
         context.textAlign = 'right';
-        context.fillText(wheelData.slices[i].text, params.radius * wheelData.text.offset * 0.001 + (params.radius / 2), 0);
+        context.fillText(slices[i].text, params.radius * obj.offset * 0.001 + (params.radius / 2), 0);
         context.restore();
     }
 }
 
-function drawSlicesImages(params) {
-    let sliceDegree = 360.0 / wheelData.slices.length;
+function drawSlicesImages(params, obj) {
+    const slices = wheelData.slices;
+    let sliceDegree = 360.0 / slices.length;
     let sliceAngle = deg2rad(sliceDegree);
 
-    const x = wheelBody.position.x;
-    const y = wheelBody.position.y;
-
-    for (let i = 0; i < wheelData.slices.length; ++i) {
+    for (let i = 0; i < slices.length; ++i) {
         context.save();
 
-        context.shadowColor = 'black';
-        context.shadowBlur = 30;
-        context.shadowOffsetX = 0;
-        context.shadowOffsetY = 0;
+        applyShadowSettings(obj);
 
-        context.translate(x, y);
+        context.translate(wheelBody.position.x, wheelBody.position.y);
         context.rotate(wheelBody.angle);
         context.rotate((sliceAngle - sliceAngle / 2.0) + sliceAngle * i);
 
-        const image = imageData[wheelData.slices[i].icon].img;
-        const size = params.radius * 0.2 * wheelData.slicesimages.size / 20;
-        const xOffset = params.radius * 0.5 * wheelData.slicesimages.offset / 20;
+        const image = imagesData[slices[i].icon].img;
+        const size = params.radius * 0.2 * obj.size / 20;
+        const xOffset = params.radius * 0.5 * obj.offset / 20;
         context.drawImage(image, xOffset - size / 2, 0 - size / 2, size, size);
 
         context.restore();
     }
 }
 
-function drawTongue(params) {
+function drawTongue(params, obj) {
     context.translate(tongueBody.position.x, tongueBody.position.y);
     context.rotate(tongueBody.angle);
 
@@ -434,18 +419,17 @@ function drawTongue(params) {
     context.lineTo(wing, w * scale);
     context.closePath();
 
-    context.shadowColor = 'black';
-    context.shadowBlur = 15;
-    context.shadowOffsetX = 0;
-    context.shadowOffsetY = 0;
+    applyShadowSettings(obj);
 
-    context.lineWidth = 9;
-    context.strokeStyle = 'lightblue';
+    context.lineWidth = w * scale * 0.3;
+    context.strokeStyle = obj.outline.color;
     context.stroke();
 
     context.shadowColor = "transparent";
 
-    context.fillStyle = 'rgba(222,222,222, 0.4)';
+    const rgbObj = hexToRgb(obj.middle.color);
+
+    context.fillStyle = `rgba(${rgbObj.r},${rgbObj.g},${rgbObj.b}, 0.4)`;
     context.fill();
 }
 
@@ -467,14 +451,16 @@ function drawDebugCollisionCircles(params) {
     context.stroke();
 }
 
-function drawCenterImage(params) {
-    const image = imageData.tcs.img;
-    const scale = params.radius * wheelData.centerLogo.scale / 10000;
+function drawCenterImage(params, obj) {
+    const image = imagesData.tcs.img;
+    const scale = params.radius * obj.size / 10000;
 
     const w = image.width * scale;
     const h = image.height * scale;
     const x = wheelBody.position.x - w / 2;
     const y = wheelBody.position.y - h / 2;
+
+    applyShadowSettings(obj);
 
     context.drawImage(image, x, y, w, h);
 }
@@ -485,38 +471,43 @@ function getRadius() {
 
 function draw() {
     const params = {
-        radius: getRadius()
+        radius: getRadius(),
+        slices: wheelData.slices
     };
 
     context.clearRect(0, 0, canvas.width, canvas.height);
 
     if (drawPhysics) {
-        context.globalAlpha = 0.6;
+        context.globalAlpha = 0.5;
         Render.world(render);
     } else {
         context.globalAlpha = 1;
     }
 
-    drawFlags.slices && drawTask(params, drawSlices);
-    drawFlags.dividers && drawTask(params, drawDividers);
-    drawFlags.texts && drawTask(params, drawText);
-    drawFlags.slicesimages && drawTask(params, drawSlicesImages);
-    drawFlags.innerRing && drawTask(params, drawInnerRing);
-    drawFlags.center && drawTask(params, drawCenter);
-    drawFlags.outerRing && drawTask(params, drawOuterRing);
-    drawFlags.subDividers && drawTask(params, drawSubDividers);
-    drawFlags.tongue && drawTask(params, drawTongue);
-    drawTask(params, drawCenterImage);
-    drawFlags.collisionCircles && drawTask(params, drawDebugCollisionCircles);
+    const visuals = wheelData.visuals;
+
+    drawTask(params, null, drawSlices);
+    visuals['dividers'].visible && drawTask(params, visuals.dividers, drawDividers);
+    visuals['texts'].visible && drawTask(params, visuals.texts, drawText);
+    visuals['slicesimages'].visible && drawTask(params, visuals.slicesimages, drawSlicesImages);
+    visuals['innerRing'].visible && drawTask(params, visuals.innerRing, drawInnerRing);
+    visuals['center'].visible && drawTask(params, visuals.center, drawCenter);
+    visuals['outerRing'].visible && drawTask(params, visuals.outerRing, drawOuterRing);
+    visuals['rods-main'].visible && drawTask(params, visuals['rods-main'], drawRodsMain);
+    visuals['rods-sub'].visible && drawTask(params, visuals['rods-sub'], drawRodsSub);
+    visuals['tongue'].visible && drawTask(params, visuals.tongue, drawTongue);
+    visuals['centerLogo'].visible && drawTask(params, visuals.centerLogo, drawCenterImage);
+    visuals['collisionCircles'].visible && drawTask(params, visuals.collisionCircles, drawDebugCollisionCircles);
 
     document.getElementById('dump').innerHTML = JSON.stringify(dump, null, 2);
 }
 
 function calcCollisionCircles() {
+    const slices = wheelData.slices;
     const x = getRadius();
     const arr = [];
 
-    for (let i = 0; i < wheelData.slices.length; ++i) {
+    for (let i = 0; i < slices.length; ++i) {
         const newPos = rotatePointCenter(x, 0, rad2deg(wheelBody.angle) + 30 + i * 60);
 
         arr.push(newPos);
@@ -533,14 +524,14 @@ function calcCollisionCircles() {
 
 function checkSelectedSliceAfterSpinning() {
     if (spinning && wheelBody.angularSpeed < 0.001 && tongueBody.angularSpeed < 0.001) {
-
+        const slices = wheelData.slices;
         const { arr, radius } = calcCollisionCircles();
 
         for (let i = 0; i < arr.length; ++i) {
             const inside = pointInCircle(tongueBody.position.x, tongueBody.position.y, arr[i].x, arr[i].y, radius);
             dump.pointInSideCircle = inside;
             if (inside) {
-                console.log('inside [' + wheelData.slices[i].text + ']');
+                console.log('inside [' + slices[i].text + ']');
                 spinning = false;
                 flasher.setup(i);
                 break;
@@ -555,6 +546,8 @@ function checkSelectedSliceAfterSpinning() {
 }
 
 function initPhysics() {
+    console.log('init physics...');
+
     const cw = canvas.width;
     const ch = canvas.height;
 

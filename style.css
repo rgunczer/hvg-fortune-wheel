@@ -16,36 +16,38 @@ body {
     justify-content: center;
 }
 
+.control-buttons-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+}
+
 h4 {
     padding: 0;
     margin: 0;
 }
 
-ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
+.custom-button {
+    cursor: pointer;
+    margin-right: 10px;
     width: 200px;
-}
-
-li a {
     background-color: #f1f1f1;
     display: block;
     color: #000;
-    padding: 8px 16px;
+    padding: 10px 16px;
     margin-bottom: 26px;
     text-decoration: none;
     font-size: xx-large;
     text-align: center;
     border-radius: 20px;
     box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.5);
-    /* font-family: 'Permanent Marker', cursive; */
     font-family: 'Knewave', cursive;
 }
 
-/* Change the link color on hover */
-
-li a:hover {
+.custom-button:hover {
     background-color: #555;
     color: white;
 }
@@ -130,4 +132,14 @@ li a:hover {
 
 hr {
     border: 1px solid black;
+}
+
+input[type=range] {
+    width: 180px;
+}
+
+.input > label {
+    display: inline-block;
+    min-width: 75px;
+    /* background-color: yellow; */
 }

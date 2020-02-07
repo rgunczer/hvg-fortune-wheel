@@ -1,98 +1,35 @@
 
 (function () {
 
-    [
-        { name: 'color', event: 'change' },
-        { name: 'text', event: 'input' }
-    ].forEach(obj => {
+    // [
+    //     { name: 'color', event: 'change' },
+    //     { name: 'text', event: 'input' }
+    // ].forEach(obj => {
+    //     const slices = wheelData.slices;
 
-        for (let i = 0; i < wheelData.slices.length; ++i) {
+    //     for (let i = 0; i < slices.length; ++i) {
 
+    //         const elem = document.querySelector(`#slice-${i}-${obj.name}`);
 
-            const elem = document.querySelector(`#slice-${i}-${obj.name}`);
+    //         if (obj.name === 'color') {
+    //             if (slices[i][obj.name].startsWith('#')) {
+    //                 elem.value = slices[i][obj.name];
+    //             } else {
+    //                 elem.value = rgbToHex(slices[i][obj.name]);
+    //             }
+    //         } else {
+    //             elem.value = slices[i][obj.name];
+    //         }
 
-            if (obj.name === 'color') {
-                if (wheelData.slices[i][obj.name].startsWith('#')) {
-                    elem.value = wheelData.slices[i][obj.name];
-                } else {
-                    elem.value = rgbToHex(wheelData.slices[i][obj.name]);
-                }
-            } else {
-                elem.value = wheelData.slices[i][obj.name];
-            }
+    //         elem.addEventListener(obj.event, (event) => {
+    //             console.log(`slice [${i}] ${obj.name} changed`, event.target.value);
+    //             slices[i][obj.name] = event.target.value;
+    //             draw();
+    //         });
 
-            elem.addEventListener(obj.event, (event) => {
-                console.log(`slice [${i}] ${obj.name} changed`, event.target.value);
-                wheelData.slices[i][obj.name] = event.target.value;
-                draw();
-            });
+    //     }
 
-        }
-
-    });
-
-    const colorSizeArray = [
-        { name: 'color', event: 'change' },
-        { name: 'size', event: 'input' }
-    ];
-
-    colorSizeArray.forEach(obj => {
-
-        const elem = document.querySelector(`#outer-ring-${obj.name}`);
-        elem.value = wheelData.outerRing[obj.name];
-
-        elem.addEventListener(obj.event, (event) => {
-            console.log(`outer ring ${obj.name} changed`, event.target.value);
-            wheelData.outerRing[obj.name] = event.target.value;
-            draw();
-        });
-
-    });
-
-    [
-        { name: 'size', event: 'input' },
-        { name: 'offset', event: 'input' },
-    ].forEach(obj => {
-
-        const elem = document.querySelector(`#slicesimages-${obj.name}`);
-        elem.value = parseInt(wheelData.slicesimages[obj.name], 10);
-
-        elem.addEventListener(obj.event, (event) => {
-            console.log(`slicesimages ${obj.name} changed`, event.target.value);
-            wheelData.slicesimages[obj.name] = parseInt(event.target.value, 10);
-            draw();
-        });
-
-
-        // CENTER LOGO - only size property is used
-        if (obj.name === 'size') {
-            const elem = document.querySelector('#centerlogo-size');
-            elem.value = parseInt(wheelData.centerLogo.scale, 10);
-    
-            elem.addEventListener(obj.event, (event) => {
-                console.log(`centerlogo ${obj.name} changed`, event.target.value);
-                wheelData.centerLogo.scale = parseInt(event.target.value, 10);
-                draw();
-            });
-        }
-
-    });
-
-    [
-        ...colorSizeArray,
-        { name: 'offset', event: 'input' }
-    ].forEach(obj => {
-
-        const elem = document.querySelector('#text-' + obj.name);
-        elem.value = wheelData.text[obj.name];
-
-        elem.addEventListener(obj.event, (event) => {
-            console.log(`text ${obj.name} changed`, event.target.value);
-            wheelData.text[obj.name] = elem.value;
-            draw();
-        });
-
-    });
+    // });
 
     ['color', 'time'].forEach(key => {
         const elem = document.querySelector('#selected-slice-flash-' + key);
@@ -108,66 +45,16 @@
     ['min', 'max'].forEach(key => {
         const elem = document.querySelector(`#wheel-${key}-speed`);
         if (elem) {
-            elem.value = wheelSpeed[key];
+            elem.value = wheelData[key];
 
             elem.addEventListener('change', (event) => {
                 console.log('wheel Speed ' + key + ' changed', event.target.checked);
-                wheelSpeed[key] = elem.value;
+                wheelData[key] = elem.value;
             });
         }
     });
 
-    colorSizeArray.forEach(obj => {
 
-        const elem = document.querySelector('#center-' + obj.name);
-        elem.value = wheelData.center[obj.name];
-
-        elem.addEventListener(obj.event, (event) => {
-            console.log(`center ${obj.name} changed`, event.target.value);
-            wheelData.center[obj.name] = elem.value;
-            draw();
-        });
-
-    });
-
-    colorSizeArray.forEach(obj => {
-
-        const elem = document.querySelector('#dividers-' + obj.name);
-        elem.value = wheelData.dividers[obj.name];
-
-        elem.addEventListener(obj.event, (event) => {
-            console.log(`dividers ${obj.name} changed`, event.target.value);
-            wheelData.dividers[obj.name] = elem.value;
-            draw();
-        });
-
-    });
-
-    colorSizeArray.forEach(obj => {
-
-        const elem = document.querySelector('#inner-ring-' + obj.name);
-        elem.value = wheelData.innerRing[obj.name];
-
-        elem.addEventListener(obj.event, (event) => {
-            console.log(`inner ring ${obj.name} changed`, event.target.value);
-            wheelData.innerRing[obj.name] = elem.value;
-            draw();
-        });
-
-    });
-
-    Object.keys(drawFlags).forEach(key => {
-        const elem = document.querySelector('#draw-' + toKebabCase(key));
-        if (elem) {
-            elem.checked = drawFlags[key];
-
-            elem.addEventListener('change', (event) => {
-                console.log('drawFlags ' + key + ' changed', event.target.checked);
-                drawFlags[key] = elem.checked;
-                draw();
-            });
-        }
-    });
 
     document.querySelector('#show-hide-editor')
         .addEventListener('click', () => {
@@ -225,5 +112,86 @@
             slice.color = rgbToHex2(255, 255, 255);
         });
     });
+
+    (function elementEditor() {
+
+        function getPropValue(obj, path) {
+            value = obj[path[0]];
+            for (let i = 1; i < path.length; ++i) {
+                value = value[path[i]];
+            }
+            return value;
+        }
+
+        function getLastItemInArray(arr) {
+            return arr[arr.length - 1];
+        }
+
+        function setPropValue(selectedWheelElement, control, value) {
+            let obj = selectedWheelElement;
+
+            for(let i = 0; i < control.propPath.length - 1; ++i) {
+                const propN = control.propPath[i];
+                obj = obj[propN];
+            }
+
+            const propName = getLastItemInArray(control.propPath);
+            if (obj.hasOwnProperty(propName)) {
+                obj[propName] = value;
+            }
+        }
+
+        const controls = [
+            { domName: 'visibility', domPropToSet: 'checked', propPath: ['visible'], event: 'change', defaultValue: true },
+            { domName: 'color', domPropToSet: 'value', propPath: ['color'], event: 'change', defaultValue: '#ffffff' },
+            { domName: 'scale', domPropToSet: 'value', propPath: ['size'], event: 'input', defaultValue: 1 },
+            { domName: 'offset', domPropToSet: 'value', propPath: ['offset'], event: 'input', defaultValue: 1 },
+            { domName: 'text', domPropToSet: 'value', propPath: ['text'], event: 'input', defaultValue: '-' },
+            { domName: 'shadow-color', domPropToSet: 'value', propPath: ['shadow', 'color'], event: 'change', defaultValue: '#000000' },
+            { domName: 'shadow-blur', domPropToSet: 'value', propPath: ['shadow', 'blur'], event: 'input', defaultValue: 0 },
+            { domName: 'shadow-offsetx', domPropToSet: 'value', propPath: ['shadow', 'offsetx'], event: 'input', defaultValue: 0 },
+            { domName: 'shadow-offsety', domPropToSet: 'value', propPath: ['shadow', 'offsety'], event: 'input', defaultValue: 0 }
+        ];
+
+        let selectedWheelElement = null;
+
+        let html = '';
+        const ddlElem = document.querySelector('#wheel-elements');
+        Object.keys(wheelData.visuals).sort().forEach(key => {
+            html += `<option value='${key}'>${key}</option>`;
+        });
+        ddlElem.innerHTML = html;
+
+        ddlElem.addEventListener('change', () => {
+            const key = ddlElem.value;
+            console.log(`dropdown change [${key}]`);
+            selectedWheelElement = wheelData.visuals[key];
+
+            controls.forEach(control => {
+                const el = document.querySelector('#' + control.domName);
+                el[control.domPropToSet] = getPropValue(selectedWheelElement, control.propPath)
+            });
+
+        });
+
+        controls.forEach(control => {
+            const el = document.querySelector('#' + control.domName);
+            console.log(el);
+
+            el.addEventListener(control.event, (event) => {
+                if (selectedWheelElement) {
+                    console.log(control);
+
+                    const value = event.target[control.domPropToSet];
+                    console.log(value);
+
+                    setPropValue(selectedWheelElement, control, value);
+                }
+            });
+        });
+
+    })();
+
+
 
 })();

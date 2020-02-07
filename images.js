@@ -1,4 +1,4 @@
-const imageData = {
+const imagesData = {
     tcs: {
         fileName: 'tcs-logo',
     },

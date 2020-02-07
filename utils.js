@@ -79,3 +79,20 @@ function toKebabCase(str) {
         .map(x => x.toLowerCase())
         .join('-');
 }
+
+function applyShadowSettings(obj) {
+    if (obj) {
+        const shadow = obj.shadow;
+        if (shadow) {
+            context.shadowColor = shadow.color;
+            context.shadowBlur = shadow.blur;
+            context.shadowOffsetX = shadow.offsetx;
+            context.shadowOffsetY = shadow.offsety;
+        }
+    }
+}
+
+function toInt(value) {
+    return parseInt(value, 10);
+}
+

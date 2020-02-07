@@ -97,9 +97,10 @@ const flasher = {
 const wheelData = {
     "flashing": { "color": "#ffff00", "time": 100 },
     "dividers": { "color": "#004080", "size": "7" },
-    "text": { "color": "#c7c4ee", "size": "60", "offset": "458" },
-    "slicesimages": { "size": "30", "offset": "20" },
+    "text": { "color": "#c7c4ee", "size": "30", "offset": "438" },
+    "slicesimages": { "size": "16", "offset": "15" },
     "center": { "color": "#7d7dff", "size": "28" },
+    "centerLogo": { "scale": 16 },
     "innerRing": { "color": "#7054b8", "size": "28" },
     "outerRing": { "color": "#5a349a", "size": 30 },
     "slices": [
@@ -107,7 +108,7 @@ const wheelData = {
         { "color": "#7557cc", "text": "Internship", "icon": "internship" },
         { "color": "#a06bd1", "text": "Corporate", "icon": "corporate" },
         { "color": "#73719d", "text": "Finance", "icon": "finance" },
-        { "color": "#4f59b9", "text": "IT Service Desk", "icon": "itservicedesk" },
+        { "color": "#4f59b9", "text": "Service Desk", "icon": "itservicedesk" },
         { "color": "#6872b0", "text": "IT Services", "icon": "itservices" },
     ]
 };
@@ -382,8 +383,8 @@ function drawText(params) {
         context.rotate(wheelBody.angle);
         context.rotate((sliceAngle - sliceAngle / 2.0) + sliceAngle * i);
         context.textBaseline = 'middle';
-        context.fillText(wheelData.slices[i].text, params.radius * wheelData.text.offset * 0.001, 0);
-
+        context.textAlign = 'right';
+        context.fillText(wheelData.slices[i].text, params.radius * wheelData.text.offset * 0.001 + (params.radius / 2), 0);
         context.restore();
     }
 }
@@ -468,7 +469,7 @@ function drawDebugCollisionCircles(params) {
 
 function drawCenterImage(params) {
     const image = imageData.tcs.img;
-    const scale = params.radius * 0.0009;
+    const scale = params.radius * wheelData.centerLogo.scale / 10000;
 
     const w = image.width * scale;
     const h = image.height * scale;

@@ -158,6 +158,7 @@ function loadImages() {
 
 window.addEventListener('resize', () => {
     setCanvasSize();
+    initPhysics();
     draw();
 }, false);
 
@@ -420,10 +421,10 @@ function drawTongue(params) {
     context.rotate(tongueBody.angle);
 
     const scale = params.radius * 0.003;
-    const w = 30 * scale;
-    const arrow = -40 * scale;
-    const wing = 10 * scale;
-    const start = 20 * scale;
+    const w = 25 * scale;
+    const arrow = -20 * scale;
+    const wing = 20 * scale;
+    const start = 32 * scale;
 
     context.beginPath();
     context.moveTo(start * scale, 0);
@@ -578,23 +579,27 @@ function initPhysics() {
 
     // engine.world.gravity.y = 0;
 
-    tongueBody = Bodies.rectangle(cw * 0.9, ch / 2, ch * 0.1, ch * 0.04);
+    tongueBodyWidth = ch * 0.1;
+    tongueBodyHeight = ch * 0.04;
+
+    tongueBody = Bodies.rectangle(cw * 0.9, ch / 2, tongueBodyWidth, tongueBodyHeight);
     tongueBumperBody = Bodies.rectangle(cw, ch * 0.5, ch * 0.04, ch * 0.3, { isStatic: true });
 
     let x = cw / 2;
     let y = ch / 2;
-    let w = ch * 0.93;
+    let w = ch * 0.95;
     let h = w * 0.024;
+    let sc = 1.75;
 
-    const divider1 = Bodies.rectangle(x, y, w, h);
+    const divider1 = Bodies.rectangle(x, y, w, h * sc);
     const divider11 = Bodies.rectangle(x, y, w, h);
     const divider111 = Bodies.rectangle(x, y, w, h);
     const divider1111 = Bodies.rectangle(x, y, w, h);
-    const divider2 = Bodies.rectangle(x, y, w, h);
+    const divider2 = Bodies.rectangle(x, y, w, h * sc);
     const divider22 = Bodies.rectangle(x, y, w, h);
     const divider222 = Bodies.rectangle(x, y, w, h);
     const divider2222 = Bodies.rectangle(x, y, w, h);
-    const divider3 = Bodies.rectangle(x, y, w, h);
+    const divider3 = Bodies.rectangle(x, y, w, h * sc);
     const divider33 = Bodies.rectangle(x, y, w, h);
     const divider333 = Bodies.rectangle(x, y, w, h);
     const divider3333 = Bodies.rectangle(x, y, w, h);
@@ -652,18 +657,18 @@ function initPhysics() {
     })
 
     const constraintTongue = Constraint.create({
-        pointA: { x: cw * 0.95, y: ch * 0.5 },
+        pointA: { x: cw * 0.94, y: ch * 0.5 },
         bodyB: tongueBody,
-        pointB: { x: 40, y: 0 },
+        pointB: { x: tongueBodyWidth / 3, y: 0 },
         length: 0,
     });
 
     const constraintSpring = Constraint.create({
         pointA: { x: cw, y: ch * 0.5 },
         bodyB: tongueBody,
-        pointB: { x: 50, y: 0 },
-        stiffness: 0.18,
-        length: 20
+        pointB: { x: tongueBodyWidth / 2, y: 0.01 },
+        stiffness: 0.3,
+        length: cw - (cw * 0.97)
     })
 
     World.add(engine.world, [
@@ -717,7 +722,3 @@ function showRandomQuestion() {
 function getRndInteger(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-
-// setTimeout(() => {
-//     modalElem.style.display = 'block';
-// }, 4000);

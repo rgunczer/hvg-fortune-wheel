@@ -63,6 +63,19 @@
             draw();
         });
 
+
+        // CENTER LOGO - only size property is used
+        if (obj.name === 'size') {
+            const elem = document.querySelector('#centerlogo-size');
+            elem.value = parseInt(wheelData.centerLogo.scale, 10);
+    
+            elem.addEventListener(obj.event, (event) => {
+                console.log(`centerlogo ${obj.name} changed`, event.target.value);
+                wheelData.centerLogo.scale = parseInt(event.target.value, 10);
+                draw();
+            });
+        }
+
     });
 
     [

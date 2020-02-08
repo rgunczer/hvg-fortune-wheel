@@ -43,7 +43,7 @@ const flasher = {
     update(fillStyle) {
         this.counter++;
 
-        if (this.counter > wheelData.flashing.time) {
+        if (this.counter > wheelData['flashing-time']) {
             const slices = wheelData.slices;
 
             questionTitleElem.innerHTML = slices[this.index].text;
@@ -70,7 +70,7 @@ const flasher = {
                 this.fill = !this.fill;
             }
             if (this.fill) {
-                return wheelData.flashing.color
+                return wheelData['flashing-color']
             } else {
                 return fillStyle;
             }
@@ -132,8 +132,8 @@ document.querySelector('#spinTheWheel').addEventListener('click', () => {
     spinning = true;
     flasher.setup();
 
-    const speedMin = toInt(wheelData.speed.min, 10);
-    const speedMax = toInt(wheelData.speed.max, 10);
+    const speedMin = toInt(wheelData['speed-min']);
+    const speedMax = toInt(wheelData['speed-max']);
     const velocity = getRandom(speedMin, speedMax);
     dump.min = speedMin;
     dump.max = speedMax;
@@ -216,7 +216,7 @@ function drawDividers(params, obj) {
 
     applyShadowSettings(obj);
 
-    context.lineWidth = obj.size;
+    context.lineWidth = obj.scale;
     context.strokeStyle = obj.color;
 
     for (let i = 0; i < slices.length; ++i) {
@@ -255,7 +255,7 @@ function drawRodsMain(params, obj) {
         context.rotate((sliceAngle * i) - sliceAngle * 0.5);
 
         context.beginPath();
-        context.arc(0, params.radius, 16 * obj.size, 0, Math.PI * 2);
+        context.arc(0, params.radius, 16 * obj.scale, 0, Math.PI * 2);
         context.fill();
         // context.stroke();
 
@@ -314,7 +314,7 @@ function drawRodsSub(params, obj) {
             context.rotate(deg2rad(j * 15));
 
             context.beginPath();
-            context.arc(0, params.radius, 8 * obj.size, 0, Math.PI * 2);
+            context.arc(0, params.radius, 8 * obj.scale, 0, Math.PI * 2);
             // context.stroke();
             context.fill();
 
@@ -328,7 +328,7 @@ function drawOuterRing(params, obj) {
     applyShadowSettings(obj);
 
     context.strokeStyle = obj.color;
-    context.lineWidth = obj.size;
+    context.lineWidth = obj.scale;
     context.beginPath();
     context.arc(wheelBody.position.x, wheelBody.position.y, params.radius, 0, -Math.PI * 2);
     context.stroke();
@@ -341,7 +341,7 @@ function drawInnerRing(params, obj) {
 
     context.beginPath();
     context.moveTo(wheelBody.position.x, wheelBody.position.y);
-    context.arc(wheelBody.position.x, wheelBody.position.y, params.radius * toInt(obj.size) * 0.01, 0, Math.PI * 2);
+    context.arc(wheelBody.position.x, wheelBody.position.y, params.radius * toInt(obj.scale) * 0.01, 0, Math.PI * 2);
     context.fill();
 }
 
@@ -351,7 +351,7 @@ function drawCenter(params, obj) {
     context.fillStyle = obj.color;
     context.beginPath();
     context.moveTo(wheelBody.position.x, wheelBody.position.y);
-    context.arc(wheelBody.position.x, wheelBody.position.y, params.radius * toInt(obj.size) * 0.01, 0, Math.PI * 2);
+    context.arc(wheelBody.position.x, wheelBody.position.y, params.radius * toInt(obj.scale) * 0.01, 0, Math.PI * 2);
     context.fill();
 }
 
@@ -361,8 +361,8 @@ function drawText(params, obj) {
     let sliceAngle = deg2rad(sliceDegree);
 
     context.fillStyle = obj.color;
-    // context.font = wheelData.texts.size + 'px Lobster';
-    context.font = obj.size + 'px Permanent Marker';
+    // context.font = wheelData.texts.scale + 'px Lobster';
+    context.font = obj.scale + 'px Permanent Marker';
 
     for (let i = 0; i < slices.length; ++i) {
         context.save();
@@ -394,7 +394,7 @@ function drawSlicesImages(params, obj) {
         context.rotate((sliceAngle - sliceAngle / 2.0) + sliceAngle * i);
 
         const image = imagesData[slices[i].icon].img;
-        const size = params.radius * 0.2 * obj.size / 20;
+        const size = params.radius * 0.2 * obj.scale / 20;
         const xOffset = params.radius * 0.5 * obj.offset / 20;
         context.drawImage(image, xOffset - size / 2, 0 - size / 2, size, size);
 
@@ -453,7 +453,7 @@ function drawDebugCollisionCircles(params) {
 
 function drawCenterImage(params, obj) {
     const image = imagesData.tcs.img;
-    const scale = params.radius * obj.size / 10000;
+    const scale = params.radius * obj.scale / 10000;
 
     const w = image.width * scale;
     const h = image.height * scale;

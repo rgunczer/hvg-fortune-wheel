@@ -38,9 +38,8 @@
         <div class="editor-area" style="display: block;">
             <button id="show-hide-editor">Show / Hide Editor</button>
             <button id="show-hide-debug">Show / Hide Debug</button>
-            &nbsp;
             <button id="test-randomness">Test Randomness</button>
-            <pre id="dump" style="display: block;"></pre>
+            <pre id="dump" style="display: none;"></pre>
             <div id="editor" style="display: block;">
                 <label>Settings: </label>
                 <button id="save-settings">Save</button>
@@ -56,77 +55,26 @@
                 <hr>
                 <h4>Wheel</h4>
                 <div class="input">
-                    <label for="selected-slice-flash-color">Selected Slice Flash Color:</label>
-                    <input type="color" id="selected-slice-flash-color" name="selected-slice-flash-color"
-                        value="#ff0000">
+                    <label for="flashing-color">Flashing Color:</label>
+                    <input type="color" id="flashing-color" name="flashing-color" value="#ff0000">
                 </div>
                 <div class="input">
-                    <label for="selected-slice-flash-time">Flashing Time:</label>
-                    <input type="range" id="selected-slice-flash-time" name="selected-slice-flash-time" min="10"
-                        max="300">
+                    <label for="flashing-time">Flashing Time:</label>
+                    <input type="range" id="flashing-time" name="flashing-time" min="10" max="300">
                 </div>
                 <div class="input">
-                    <label for="wheel-min-speed">Min Speed:</label>
-                    <input type="range" id="wheel-min-speed" name="wheel-min-speed" min="10" max="100">
+                    <label for="speed-min">Min Speed:</label>
+                    <input type="range" id="speed-min" name="speed-min" min="10" max="100">
                 </div>
                 <div class="input">
-                    <label for="wheel-max-speed">Max Speed:</label>
-                    <input type="range" id="wheel-max-speed" name="wheel-max-speed" min="10" max="100">
+                    <label for="speed-max">Max Speed:</label>
+                    <input type="range" id="speed-max" name="speed-max" min="10" max="100">
                 </div>
 
                 <hr>
-                <h4 style="padding-bottom: 10px;">Settings for</h4>
                 <div style="display: flex;">
-                    <select id="wheel-elements" size="18"></select>
-
-                    <div style="display: inline; padding-left: 10px;">
-                        <div class="input">
-                            <label for="visibility">Visible:</label>
-                            <input type="checkbox" id="visibility" name="visibility">
-                        </div>
-                        <div class="input">
-                            <label for="color">Color:</label>
-                            <input type="color" id="color" name="color" value="#ff0000">
-                        </div>
-                        <div class="input">
-                            <label for="scale">Scale:</label>
-                            <input type="range" id="scale" name="scale" min="0" max="60">
-                        </div>
-                        <div class="input">
-                            <label for="offset">Offset:</label>
-                            <input type="range" id="offset" name="offset" min="0" max="600">
-                        </div>
-                        <div class="input">
-                            <label for="text">Text:</label>
-                            <input type="text" id="text" name="text" value="">
-                        </div>
-                        <hr>
-                        <h4 style="padding-bottom: 10px;">Shadow</h4>
-                        <div class="input">
-                            <label for="shadow-color">Color:</label>
-                            <input type="color" id="shadow-color" name="shadow-color" value="#000000">
-                        </div>
-                        <div class="input">
-                            <label for="shadow-blur">Blur:</label>
-                            <input type="range" id="shadow-blur" name="shadow-blur" min="0" max="100">
-                        </div>
-                        <div class="input">
-                            <label for="shadow-offsetx">Offset X:</label>
-                            <input type="range" id="shadow-offsetx" name="shadow-offsetx" min="-50" max="50"
-                                list="tickmarks">
-                            <datalist id="tickmarks">
-                                <option value="-50"></option>
-                                <option value="-25"></option>
-                                <option value="0"></option>
-                                <option value="25"></option>
-                                <option value="50"></option>
-                            </datalist>
-                        </div>
-                        <div class="input">
-                            <label for="shadow-offsety">Offset Y:</label>
-                            <input type="range" id="shadow-offsety" name="shadow-offsety" min="-50" max="50"
-                                list="tickmarks">
-                        </div>
+                    <select id="wheel-visuals" size="18"></select>
+                    <div id="editor-host" style="display: inline; padding-left: 10px;">
                     </div>
                 </div>
 

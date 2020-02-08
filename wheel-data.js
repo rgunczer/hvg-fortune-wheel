@@ -1,20 +1,18 @@
 const wheelData = {
-    "flashing": {
-        "color": "#ffff00",
-        "time": 100
-    },
-    "speed": {
-        min: 30,
-        max: 70
-    },
+    "flashing-color": "#ffff00",
+    "flashing-time": 100,
+    "speed-min": 30,
+    "speed-max": 70,
+    "shadow-range-min": -50,
+    "shadow-range-max": 50,
     visuals: {
         "collisionCircles": {
             visible: false
         },
         "dividers": {
             visible: true,
-            "color": "#004080",
-            "size": "7",
+            color: "#004080",
+            scale: 7,
             shadow: {
                 color: '#000000',
                 blur: 20,
@@ -25,7 +23,7 @@ const wheelData = {
         "rods-main": {
             visible: true,
             color: '#ADD8E6',
-            size: 1,
+            scale: 1,
             shadow: {
                 color: '#000000',
                 blur: 14,
@@ -36,7 +34,7 @@ const wheelData = {
         "rods-sub": {
             visible: true,
             color: '#ADD8E6',
-            size: 1,
+            scale: 1,
             shadow: {
                 color: '#000000',
                 blur: 14,
@@ -46,9 +44,10 @@ const wheelData = {
         },
         "texts": {
             visible: true,
-            "color": "#c7c4ee",
-            "size": "30",
-            "offset": "438",
+            color: "#c7c4ee",
+            scale: 30,
+            offset: 438,
+            'offset-max': 600,
             shadow: {
                 color: '#000000',
                 blur: 10,
@@ -58,8 +57,8 @@ const wheelData = {
         },
         "slicesimages": {
             visible: true,
-            "size": "16",
-            "offset": "15",
+            scale: 16,
+            offset: 15,
             shadow: {
                 color: '#000000',
                 blur: 30,
@@ -69,8 +68,8 @@ const wheelData = {
         },
         "center": {
             visible: true,
-            "color": "#7d7dff",
-            "size": "28",
+            color: "#7d7dff",
+            scale: 28,
             shadow: {
                 color: '#000000',
                 blur: 20,
@@ -80,7 +79,7 @@ const wheelData = {
         },
         "centerLogo": {
             visible: true,
-            "size": 16,
+            scale: 16,
             shadow: {
                 color: '#000000',
                 blur: 2,
@@ -90,8 +89,8 @@ const wheelData = {
         },
         "innerRing": {
             visible: true,
-            "color": "#7054b8",
-            "size": "28",
+            color: "#7054b8",
+            scale: 28,
             shadow: {
                 color: '#000000',
                 blur: 20,
@@ -101,8 +100,8 @@ const wheelData = {
         },
         "outerRing": {
             visible: true,
-            "color": "#5a349a",
-            "size": 30,
+            color: "#5a349a",
+            scale: 30,
             shadow: {
                 color: '#000000',
                 blur: 20,
@@ -127,39 +126,39 @@ const wheelData = {
         },
         "slice-00": {
             visible: true,
-            "color": "#918bc5",
-            "text": "Life",
-            "icon": "life"
+            color: "#918bc5",
+            text: "Life",
+            icon: "life"
         },
         "slice-01": {
             visible: true,
-            "color": "#7557cc",
-            "text": "Internship",
-            "icon": "internship"
+            color: "#7557cc",
+            text: "Internship",
+            icon: "internship"
         },
         "slice-02": {
             visible: true,
-            "color": "#a06bd1",
-            "text": "Corporate",
-            "icon": "corporate"
+            color: "#a06bd1",
+            text: "Corporate",
+            icon: "corporate"
         },
         "slice-03": {
             visible: true,
-            "color": "#73719d",
-            "text": "Finance",
-            "icon": "finance"
+            color: "#73719d",
+            text: "Finance",
+            icon: "finance"
         },
         "slice-04": {
             visible: true,
-            "color": "#4f59b9",
-            "text": "Service Desk",
-            "icon": "itservicedesk"
+            color: "#4f59b9",
+            text: "Service Desk",
+            icon: "itservicedesk"
         },
         "slice-05": {
             visible: true,
-            "color": "#6872b0",
-            "text": "IT Services",
-            "icon": "itservices"
+            color: "#6872b0",
+            text: "IT Services",
+            icon: "itservices"
         },
     },
     slices: []

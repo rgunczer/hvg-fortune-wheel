@@ -1,197 +1,318 @@
-
 (function () {
 
-    // [
-    //     { name: 'color', event: 'change' },
-    //     { name: 'text', event: 'input' }
-    // ].forEach(obj => {
-    //     const slices = wheelData.slices;
-
-    //     for (let i = 0; i < slices.length; ++i) {
-
-    //         const elem = document.querySelector(`#slice-${i}-${obj.name}`);
-
-    //         if (obj.name === 'color') {
-    //             if (slices[i][obj.name].startsWith('#')) {
-    //                 elem.value = slices[i][obj.name];
-    //             } else {
-    //                 elem.value = rgbToHex(slices[i][obj.name]);
-    //             }
-    //         } else {
-    //             elem.value = slices[i][obj.name];
-    //         }
-
-    //         elem.addEventListener(obj.event, (event) => {
-    //             console.log(`slice [${i}] ${obj.name} changed`, event.target.value);
-    //             slices[i][obj.name] = event.target.value;
-    //             draw();
-    //         });
-
-    //     }
-
-    // });
-
-    ['color', 'time'].forEach(key => {
-        const elem = document.querySelector('#selected-slice-flash-' + key);
-        elem.value = wheelData.flashing[key];
-
-        elem.addEventListener('change', (event) => {
-            console.log(`selected slice flash ${key} changed`, event.target.value);
-            wheelData.flashing[key] = elem.value;
-            draw();
-        });
-    });
-
-    ['min', 'max'].forEach(key => {
-        const elem = document.querySelector(`#wheel-${key}-speed`);
-        if (elem) {
-            elem.value = wheelData[key];
+    (function () {
+        ['flashing-color', 'flashing-time', 'speed-min', 'speed-max'].forEach(id => {
+            const elem = document.querySelector('#' + id);
+            elem.value = wheelData[id];
 
             elem.addEventListener('change', (event) => {
-                console.log('wheel Speed ' + key + ' changed', event.target.checked);
-                wheelData[key] = elem.value;
+                console.log(`${id} changed`, event.target.value);
+                wheelData[id] = elem.value;
             });
-        }
-    });
-
-
-
-    document.querySelector('#show-hide-editor')
-        .addEventListener('click', () => {
-            const elem = document.getElementById('editor');
-
-            if (elem.style.display === 'block') {
-                elem.style.display = 'none';
-            } else {
-                elem.style.display = 'block';
-            }
         });
+    })();
 
-    document.querySelector('#show-hide-debug')
-        .addEventListener('click', () => {
-            const elem = document.getElementById('dump');
+    (function () {
+        const showHideButtonId = 'show-hide-editor';
+        const showHideDebugButtonId = 'show-hide-debug';
+        const testRandomnessButtonId = 'test-randomness';
+        [showHideButtonId, showHideDebugButtonId, testRandomnessButtonId].forEach(buttonId => {
 
-            if (elem.style.display === 'block') {
-                elem.style.display = 'none';
-            } else {
-                elem.style.display = 'block';
-            }
-        });
+            document.querySelector('#' + buttonId).addEventListener('click', (event) => {
 
+                const id = event.target.getAttribute('id');
 
-    const pageBgColorElem = document.querySelector('#page-bg-color');
+                switch (id) {
+                    case showHideButtonId: {
+                        const elem = document.getElementById('editor');
+                        showHideElement(elem);
+                    }
+                        break;
 
-    const style = getComputedStyle(document.body);
+                    case showHideDebugButtonId: {
+                        const elem = document.getElementById('dump');
+                        showHideElement(elem);
+                    }
+                        break;
 
-    pageBgColorElem.value = rgbToHex(style.backgroundColor);
+                    case testRandomnessButtonId: {
+                        testRandomness = true;
+                        wheelData.slices.forEach(slice => {
+                            slice.color = rgbToHex2(255, 255, 255);
+                        });
+                    }
+                        break;
+                }
 
-    pageBgColorElem.addEventListener('change', (event) => {
-        console.log('drawFlags page background color changed', event.target.checked);
-        document.body.style.backgroundColor = pageBgColorElem.value;
-        draw();
-    });
-
-    document.querySelector('#save-settings').addEventListener('click', () => {
-        localStorage.setItem('bg-color', document.body.style.backgroundColor);
-    });
-
-    document.querySelector('#load-settings').addEventListener('click', () => {
-        document.body.style.backgroundColor = localStorage.getItem('bg-color');
-        pageBgColorElem.value = rgbToHex(document.body.style.backgroundColor);
-    });
-
-    const pageBgColor = localStorage.getItem('bg-color');
-    if (pageBgColor !== null) {
-        document.body.style.backgroundColor = pageBgColor;
-        pageBgColorElem.value = rgbToHex(document.body.style.backgroundColor);
-    }
-
-    document.querySelector('#test-randomness').addEventListener('click', () => {
-        testRandomness = true;
-        wheelData.slices.forEach(slice => {
-            slice.color = rgbToHex2(255, 255, 255);
-        });
-    });
-
-    (function elementEditor() {
-
-        function getPropValue(obj, path) {
-            value = obj[path[0]];
-            for (let i = 1; i < path.length; ++i) {
-                value = value[path[i]];
-            }
-            return value;
-        }
-
-        function getLastItemInArray(arr) {
-            return arr[arr.length - 1];
-        }
-
-        function setPropValue(selectedWheelElement, control, value) {
-            let obj = selectedWheelElement;
-
-            for(let i = 0; i < control.propPath.length - 1; ++i) {
-                const propN = control.propPath[i];
-                obj = obj[propN];
-            }
-
-            const propName = getLastItemInArray(control.propPath);
-            if (obj.hasOwnProperty(propName)) {
-                obj[propName] = value;
-            }
-        }
-
-        const controls = [
-            { domName: 'visibility', domPropToSet: 'checked', propPath: ['visible'], event: 'change', defaultValue: true },
-            { domName: 'color', domPropToSet: 'value', propPath: ['color'], event: 'change', defaultValue: '#ffffff' },
-            { domName: 'scale', domPropToSet: 'value', propPath: ['size'], event: 'input', defaultValue: 1 },
-            { domName: 'offset', domPropToSet: 'value', propPath: ['offset'], event: 'input', defaultValue: 1 },
-            { domName: 'text', domPropToSet: 'value', propPath: ['text'], event: 'input', defaultValue: '-' },
-            { domName: 'shadow-color', domPropToSet: 'value', propPath: ['shadow', 'color'], event: 'change', defaultValue: '#000000' },
-            { domName: 'shadow-blur', domPropToSet: 'value', propPath: ['shadow', 'blur'], event: 'input', defaultValue: 0 },
-            { domName: 'shadow-offsetx', domPropToSet: 'value', propPath: ['shadow', 'offsetx'], event: 'input', defaultValue: 0 },
-            { domName: 'shadow-offsety', domPropToSet: 'value', propPath: ['shadow', 'offsety'], event: 'input', defaultValue: 0 }
-        ];
-
-        let selectedWheelElement = null;
-
-        let html = '';
-        const ddlElem = document.querySelector('#wheel-elements');
-        Object.keys(wheelData.visuals).sort().forEach(key => {
-            html += `<option value='${key}'>${key}</option>`;
-        });
-        ddlElem.innerHTML = html;
-
-        ddlElem.addEventListener('change', () => {
-            const key = ddlElem.value;
-            console.log(`dropdown change [${key}]`);
-            selectedWheelElement = wheelData.visuals[key];
-
-            controls.forEach(control => {
-                const el = document.querySelector('#' + control.domName);
-                el[control.domPropToSet] = getPropValue(selectedWheelElement, control.propPath)
             });
 
         });
+    })();
 
-        controls.forEach(control => {
-            const el = document.querySelector('#' + control.domName);
-            console.log(el);
+    (function () {
+        const bgColorElem = document.querySelector('#page-bg-color');
+        const style = getComputedStyle(document.body);
+        bgColorElem.value = rgbToHex(style.backgroundColor);
+        bgColorElem.addEventListener('change', (event) => {
+            console.log('page background color changed', event.target.value);
+            document.body.style.backgroundColor = bgColorElem.value;
+        });
 
-            el.addEventListener(control.event, (event) => {
-                if (selectedWheelElement) {
-                    console.log(control);
+        const pageBgColor = localStorage.getItem('bg-color');
+        if (pageBgColor !== null) {
+            document.body.style.backgroundColor = pageBgColor;
+            bgColorElem.value = rgbToHex(document.body.style.backgroundColor);
+        }
 
-                    const value = event.target[control.domPropToSet];
-                    console.log(value);
+        document.querySelector('#save-settings').addEventListener('click', () => {
+            localStorage.setItem('bg-color', document.body.style.backgroundColor);
+        });
 
-                    setPropValue(selectedWheelElement, control, value);
+        document.querySelector('#load-settings').addEventListener('click', () => {
+            document.body.style.backgroundColor = localStorage.getItem('bg-color');
+            bgColorElem.value = rgbToHex(document.body.style.backgroundColor);
+        });
+    })();
+
+    (function () {
+        const editorHostElem = document.querySelector('#editor-host');
+        const visualsListElem = document.querySelector('#wheel-visuals');
+
+        let selectedVisualItem = null;
+
+        function getWheelVisualOptions() {
+            let html = '';
+            Object.keys(wheelData.visuals).sort().forEach(key => {
+                html += `<option value='${key}'>${key}</option>`;
+            });
+            return html;
+        }
+
+        function visibilityCheckedHandler(event) {
+            selectedVisualItem.visible = event.target.checked;
+        }
+
+        function colorChangeHandler(event) {
+            selectedVisualItem.color = event.target.value;
+        }
+
+        function scaleInputHandler(event) {
+            selectedVisualItem.scale = event.target.value;
+        }
+
+        function offsetInputHandler(event) {
+            selectedVisualItem.offset = event.target.value;
+        }
+
+        function textInputHandler(event) {
+            selectedVisualItem.text = event.target.value;
+        }
+
+        function shadowColorInputHandler(event) {
+            selectedVisualItem.shadow.color = event.target.value;
+        }
+
+        function shadowBlurInputHandler(event) {
+            selectedVisualItem.shadow.blur = event.target.value;
+        }
+
+        function shadowOffsetXInputHandler(event) {
+            selectedVisualItem.shadow.offsetx = event.target.value;
+        }
+
+        function shadowOffsetYInputHandler(event) {
+            selectedVisualItem.shadow.offsety = event.target.value;
+        }
+
+        function outlineColorInputHandler(event) {
+            selectedVisualItem.outline.color = event.target.value;
+        }
+
+        function middleColorInputHandler(event) {
+            selectedVisualItem.middle.color = event.target.value;
+        }
+
+        function createElemWithClass(type, classToAdd) {
+            const el = document.createElement(type);
+            el.classList.add(classToAdd);
+            return el;
+        }
+
+        function createLabel(text, forHtml) {
+            const el = document.createElement('label');
+            el.setAttribute('for', forHtml);
+            el.innerHTML = text;
+            return el;
+        }
+
+        function createColorEditor(currentValue, hostElem, labelText, idAndName, eventHandlerFn) {
+            const divElem = createElemWithClass('div', 'input');
+            hostElem.appendChild(divElem);
+
+            const labelElement = createLabel(labelText, idAndName);
+            divElem.appendChild(labelElement);
+
+            const inputElement = document.createElement('input');
+            inputElement.type = 'color';
+            inputElement.name = idAndName;
+            inputElement.id = idAndName;
+            divElem.appendChild(inputElement);
+
+            inputElement.value = currentValue;
+
+            inputElement.addEventListener('change', eventHandlerFn);
+        }
+
+        function createRangeEditor(currentValue, hostElem, labelText, idAndName, minValue, maxValue, rangeValuesArray, eventHandlerFn) {
+            const divElem = createElemWithClass('div', 'input');
+            hostElem.appendChild(divElem);
+
+            const labelElement = createLabel(labelText, idAndName);
+            divElem.appendChild(labelElement);
+
+            const datalistElem = document.createElement('datalist');
+            datalistElem.id = "tickmarks-" + idAndName;
+
+            let options = '';
+            for(let i = 0; i < rangeValuesArray.length; ++i) {
+                options += `<option value="${rangeValuesArray[i]}" />`;
+            }
+
+            datalistElem.innerHTML = options;
+
+            divElem.appendChild(datalistElem);
+
+            const inputElement = document.createElement('input');
+            inputElement.type = 'range';
+            inputElement.name = idAndName;
+            inputElement.id = idAndName;
+            inputElement.min = minValue;
+            inputElement.max = maxValue;
+            // inputElement.list = dataListElem; // not working
+            inputElement.setAttribute('list', datalistElem.id );
+
+            divElem.appendChild(inputElement);
+
+            inputElement.value = currentValue;
+
+            inputElement.addEventListener('input', eventHandlerFn);
+        }
+
+        function createCheckBoxEditor(currentValue, hostElem, idName, labelText, eventHandlerFn) {
+            const divElement = createElemWithClass('div', 'input');
+            hostElem.appendChild(divElement);
+
+            const labelElement = createLabel(labelText, idName);
+            divElement.appendChild(labelElement);
+
+            const inputElement = document.createElement('input');
+            inputElement.type = 'checkbox';
+            inputElement.name = idName;
+            inputElement.id = idName;
+
+            divElement.appendChild(inputElement);
+
+            inputElement.checked = currentValue;
+
+            inputElement.addEventListener('change', eventHandlerFn);
+        }
+
+        function createTextEditor(currentValue, hostElem, labelText, idName, eventHandlerFn) {
+            const divElement = createElemWithClass('div', 'input');
+            hostElem.appendChild(divElement);
+
+            const labelElement = createLabel(labelText, idName);
+            divElement.appendChild(labelElement);
+
+            const inputElement = document.createElement('input');
+            inputElement.type = 'text';
+            inputElement.name = idName;
+            inputElement.id = idName;
+
+            divElement.appendChild(inputElement);
+
+            inputElement.value = currentValue;
+
+            inputElement.addEventListener('input', eventHandlerFn);
+        }
+
+        function createEditorUi(key) {
+            const range0to100by10 = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+
+            switch (key) {
+                case 'visible':
+                    createCheckBoxEditor(selectedVisualItem.visible, editorHostElem, 'visibility', 'Visible:', visibilityCheckedHandler);
+                    break;
+
+                case 'color':
+                    createColorEditor(selectedVisualItem.color, editorHostElem, 'Color:', 'color', colorChangeHandler);
+                    break;
+
+                case 'scale':
+                    createRangeEditor(selectedVisualItem.scale, editorHostElem, 'Scale:', 'scale', 0, 100, range0to100by10, scaleInputHandler);
+                    break;
+
+                case 'offset': {
+                    if (selectedVisualItem.hasOwnProperty('offset-max')) {
+                        const offsetMax = selectedVisualItem['offset-max'];
+                        createRangeEditor(selectedVisualItem.offset, editorHostElem, 'Offset:', 'offset', 0, offsetMax, [0, 25, 50, 75, offsetMax], offsetInputHandler);
+                    } else {
+                        createRangeEditor(selectedVisualItem.offset, editorHostElem, 'Offset:', 'offset', 0, 100, range0to100by10, offsetInputHandler);
+                    }
+                }
+                    break;
+
+                case 'text':
+                    createTextEditor(selectedVisualItem.text, editorHostElem, 'Text:', 'text', textInputHandler);
+                    break;
+            }
+
+            if (isObject(selectedVisualItem[key])) {
+                switch (key) {
+                    case 'shadow': {
+                        const hrElem = document.createElement('hr');
+                        editorHostElem.appendChild(hrElem);
+
+                        const h4Elem = document.createElement('h4');
+                        h4Elem.style.paddingBottom = '10px';
+                        h4Elem.innerHTML = 'Shadow';
+                        editorHostElem.appendChild(h4Elem);
+
+                        createColorEditor(selectedVisualItem.shadow.color, editorHostElem, 'Color:', 'shadow-color', shadowColorInputHandler);
+                        createRangeEditor(selectedVisualItem.shadow.blur, editorHostElem, 'Blur:', 'shadow-blur', 0, 100, range0to100by10, shadowBlurInputHandler);
+                        createRangeEditor(selectedVisualItem.shadow.offsetx, editorHostElem, 'Offset X:', 'shadow-offsetx', -50, 50, [-50, -25, 0, 25, 50], shadowOffsetXInputHandler);
+                        createRangeEditor(selectedVisualItem.shadow.offsety, editorHostElem, 'Offset Y:', 'shadow-offsety', -50, 50, [-50, -25, 0, 25, 50], shadowOffsetYInputHandler);
+                    }
+                        break;
+
+                    case 'outline':
+                        createColorEditor(selectedVisualItem.outline.color, editorHostElem, 'Outline Color:', 'outline-color', outlineColorInputHandler);
+                        break;
+
+                    case 'middle':
+                        createColorEditor(selectedVisualItem.outline.color, editorHostElem, 'Middle Color:', 'middle-color', middleColorInputHandler);
+                        break;
+                }
+            }
+        }
+
+        visualsListElem.innerHTML = getWheelVisualOptions();
+
+        visualsListElem.addEventListener('change', (event) => {
+            const visualItemName = event.target.value;
+            selectedVisualItem = wheelData.visuals[visualItemName];
+
+            while (editorHostElem.firstChild) {
+                editorHostElem.removeChild(editorHostElem.firstChild);
+            }
+
+            Object.keys(selectedVisualItem).forEach(key => {
+                if (selectedVisualItem.hasOwnProperty(key)) {
+                    createEditorUi(key);
                 }
             });
         });
 
     })();
-
-
 
 })();

@@ -96,3 +96,15 @@ function toInt(value) {
     return parseInt(value, 10);
 }
 
+function showHideElement(elem) {
+    if (elem.style.display === 'block') {
+        elem.style.display = 'none';
+    }
+    else {
+        elem.style.display = 'block';
+    }
+}
+
+function isObject(obj) {
+    return typeof obj === 'object' && obj !== null;
+}

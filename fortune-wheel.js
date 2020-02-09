@@ -1,6 +1,8 @@
 let canvas = null;
 let context = null;
 
+const TWO_PI = Math.PI * 2;
+
 const modalElem = document.querySelector('#question-modal');
 const questionTitleElem = document.querySelector('#question-title');
 const questionTextElem = document.querySelector('#question-text');
@@ -10,7 +12,7 @@ modalElem.addEventListener('click', () => {
     questionTextElem.innerHTML = 'What do you get when you cross a mentally ill loner with a society that abandons him and treats him like trash?';
 });
 
-// matter vars
+// matter
 const Engine = Matter.Engine;
 const Render = Matter.Render;
 const World = Matter.World;
@@ -180,9 +182,11 @@ function animate() {
 }
 
 function drawTask(params, objToDraw, taskFn) {
-    context.save();
-    taskFn(params, objToDraw);
-    context.restore();
+    if (objToDraw && objToDraw.visible) {
+        context.save();
+        taskFn(params, objToDraw);
+        context.restore();
+    }
 }
 
 function drawSlices(params) {
@@ -205,7 +209,9 @@ function drawSlices(params) {
             context.fillStyle = flasher.update(context.fillStyle);
         }
 
-        context.fill();
+        if (wheelData.slices[i].visible) {
+            context.fill();
+        }
     }
 }
 
@@ -242,11 +248,9 @@ function drawRodsMain(params, obj) {
     applyShadowSettings(obj);
 
     context.lineWidth = 6;
-    // context.strokeStyle = 'lightblue';
     context.fillStyle = obj.color;
 
     for (let i = 0; i < slices.length; ++i) {
-
         context.save();
 
         context.setTransform(1, 0, 0, 1, 0, 0);
@@ -255,32 +259,10 @@ function drawRodsMain(params, obj) {
         context.rotate((sliceAngle * i) - sliceAngle * 0.5);
 
         context.beginPath();
-        context.arc(0, params.radius, 16 * obj.scale, 0, Math.PI * 2);
+        context.arc(0, params.radius, 16 * obj.scale * 0.05, 0, TWO_PI);
         context.fill();
-        // context.stroke();
 
         context.restore();
-
-        // for (let j = 1; j <= 3; ++j) {
-
-        //     context.save();
-
-        //     context.lineWidth = 4;
-
-        //     context.setTransform(1, 0, 0, 1, 0, 0);
-        //     context.translate(cx, cy);
-        //     context.rotate(wheelBody.angle);
-        //     context.rotate((sliceAngle * i) - sliceAngle * 0.5);
-        //     context.rotate(deg2rad(j * 15));
-
-        //     context.beginPath();
-        //     context.arc(0, params.radius, 8, 0, Math.PI * 2);
-        //     // context.stroke();
-        //     context.fill();
-
-        //     context.restore();
-        // }
-
     }
 }
 
@@ -294,13 +276,11 @@ function drawRodsSub(params, obj) {
     applyShadowSettings(obj);
 
     context.lineWidth = 6;
-    // context.strokeStyle = 'lightblue';
     context.fillStyle = obj.color;
 
     for (let i = 0; i < slices.length; ++i) {
 
         for (let j = 1; j <= 3; ++j) {
-
             context.save();
 
             context.lineWidth = 4;
@@ -314,8 +294,7 @@ function drawRodsSub(params, obj) {
             context.rotate(deg2rad(j * 15));
 
             context.beginPath();
-            context.arc(0, params.radius, 8 * obj.scale, 0, Math.PI * 2);
-            // context.stroke();
+            context.arc(0, params.radius, 8 * obj.scale * 0.05, 0, TWO_PI);
             context.fill();
 
             context.restore();
@@ -330,7 +309,7 @@ function drawOuterRing(params, obj) {
     context.strokeStyle = obj.color;
     context.lineWidth = obj.scale;
     context.beginPath();
-    context.arc(wheelBody.position.x, wheelBody.position.y, params.radius, 0, -Math.PI * 2);
+    context.arc(wheelBody.position.x, wheelBody.position.y, params.radius, 0, -TWO_PI);
     context.stroke();
 }
 
@@ -341,7 +320,7 @@ function drawInnerRing(params, obj) {
 
     context.beginPath();
     context.moveTo(wheelBody.position.x, wheelBody.position.y);
-    context.arc(wheelBody.position.x, wheelBody.position.y, params.radius * toInt(obj.scale) * 0.01, 0, Math.PI * 2);
+    context.arc(wheelBody.position.x, wheelBody.position.y, params.radius * toInt(obj.scale) * 0.01, 0, TWO_PI);
     context.fill();
 }
 
@@ -351,18 +330,18 @@ function drawCenter(params, obj) {
     context.fillStyle = obj.color;
     context.beginPath();
     context.moveTo(wheelBody.position.x, wheelBody.position.y);
-    context.arc(wheelBody.position.x, wheelBody.position.y, params.radius * toInt(obj.scale) * 0.01, 0, Math.PI * 2);
+    context.arc(wheelBody.position.x, wheelBody.position.y, params.radius * toInt(obj.scale) * 0.01, 0, TWO_PI);
     context.fill();
 }
 
-function drawText(params, obj) {
+function drawTexts(params, obj) {
     const slices = wheelData.slices;
     let sliceDegree = 360.0 / slices.length;
     let sliceAngle = deg2rad(sliceDegree);
 
     context.fillStyle = obj.color;
-    // context.font = wheelData.texts.scale + 'px Lobster';
-    context.font = obj.scale + 'px Permanent Marker';
+    context.font = obj.scale + 'px Lobster';
+    // context.font = obj.scale + 'px Permanent Marker';
 
     for (let i = 0; i < slices.length; ++i) {
         context.save();
@@ -395,7 +374,7 @@ function drawSlicesImages(params, obj) {
 
         const image = imagesData[slices[i].icon].img;
         const size = params.radius * 0.2 * obj.scale / 20;
-        const xOffset = params.radius * 0.5 * obj.offset / 20;
+        const xOffset = params.radius * 0.5 * obj.offset * 0.02;
         context.drawImage(image, xOffset - size / 2, 0 - size / 2, size, size);
 
         context.restore();
@@ -408,28 +387,29 @@ function drawTongue(params, obj) {
 
     const scale = params.radius * 0.003;
     const w = 25 * scale;
-    const arrow = -20 * scale;
-    const wing = 20 * scale;
+    const arrow = -22 * scale;
+    const wing = 16 * scale;
     const start = 32 * scale;
+
+    context.lineWidth = w * scale * 0.3;
+    context.strokeStyle = obj.outline.color;
 
     context.beginPath();
     context.moveTo(start * scale, 0);
     context.lineTo(wing * scale, -w * scale);
     context.lineTo(arrow * scale, 0);
-    context.lineTo(wing, w * scale);
+    context.lineTo(wing * scale, w * scale);
+    context.lineTo(start * scale, 0);
     context.closePath();
 
     applyShadowSettings(obj);
 
-    context.lineWidth = w * scale * 0.3;
-    context.strokeStyle = obj.outline.color;
     context.stroke();
 
-    context.shadowColor = "transparent";
+    context.shadowColor = 'transparent';
+    const rgbObj = hexToRgb(obj.inner.color);
 
-    const rgbObj = hexToRgb(obj.middle.color);
-
-    context.fillStyle = `rgba(${rgbObj.r},${rgbObj.g},${rgbObj.b}, 0.4)`;
+    context.fillStyle = `rgba(${rgbObj.r},${rgbObj.g},${rgbObj.b}, ${obj.inner.alpha})`;
     context.fill();
 }
 
@@ -484,20 +464,20 @@ function draw() {
         context.globalAlpha = 1;
     }
 
-    const visuals = wheelData.visuals;
+    const { visuals } = wheelData;
 
-    drawTask(params, null, drawSlices);
-    visuals['dividers'].visible && drawTask(params, visuals.dividers, drawDividers);
-    visuals['texts'].visible && drawTask(params, visuals.texts, drawText);
-    visuals['slicesimages'].visible && drawTask(params, visuals.slicesimages, drawSlicesImages);
-    visuals['innerRing'].visible && drawTask(params, visuals.innerRing, drawInnerRing);
-    visuals['center'].visible && drawTask(params, visuals.center, drawCenter);
-    visuals['outerRing'].visible && drawTask(params, visuals.outerRing, drawOuterRing);
-    visuals['rods-main'].visible && drawTask(params, visuals['rods-main'], drawRodsMain);
-    visuals['rods-sub'].visible && drawTask(params, visuals['rods-sub'], drawRodsSub);
-    visuals['tongue'].visible && drawTask(params, visuals.tongue, drawTongue);
-    visuals['centerLogo'].visible && drawTask(params, visuals.centerLogo, drawCenterImage);
-    visuals['collisionCircles'].visible && drawTask(params, visuals.collisionCircles, drawDebugCollisionCircles);
+    drawTask(params, { visible: true }, drawSlices);
+    drawTask(params, visuals.dividers, drawDividers);
+    drawTask(params, visuals.texts, drawTexts);
+    drawTask(params, visuals.slicesimages, drawSlicesImages);
+    drawTask(params, visuals.innerRing, drawInnerRing);
+    drawTask(params, visuals.center, drawCenter);
+    drawTask(params, visuals.outerRing, drawOuterRing);
+    drawTask(params, visuals['rods-main'], drawRodsMain);
+    drawTask(params, visuals['rods-sub'], drawRodsSub);
+    drawTask(params, visuals.tongue, drawTongue);
+    drawTask(params, visuals.centerLogo, drawCenterImage);
+    drawTask(params, visuals.collisionCircles, drawDebugCollisionCircles);
 
     document.getElementById('dump').innerHTML = JSON.stringify(dump, null, 2);
 }
@@ -570,8 +550,6 @@ function initPhysics() {
             showIds: true,
         }
     });
-
-    // engine.world.gravity.y = 0;
 
     tongueBodyWidth = ch * 0.1;
     tongueBodyHeight = ch * 0.04;
@@ -661,7 +639,9 @@ function initPhysics() {
         pointA: { x: cw, y: ch * 0.5 },
         bodyB: tongueBody,
         pointB: { x: tongueBodyWidth / 2, y: 0.01 },
-        stiffness: 0.3,
+        // A value of 0.1 means the constraint will apply heavy damping, resulting in little to no oscillation.
+        // A value of 0 means the constraint will apply no damping.
+        stiffness: 0.08,
         length: cw - (cw * 0.97)
     })
 
@@ -674,9 +654,9 @@ function initPhysics() {
         constraintWheel,
     ]);
 
-    engine.world.positionIterations = 20;
-    engine.world.velocityIterations = 20;
-
+    engine.positionIterations = 12;
+    engine.velocityIterations = 8;
+    engine.constraintIterations = 4;
 }
 
 // QUESTIONS

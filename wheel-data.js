@@ -11,11 +11,11 @@ const wheelData = {
         },
         "dividers": {
             visible: true,
-            color: "#004080",
-            scale: 7,
+            color: "#ffffff",
+            scale: 0,
             shadow: {
-                color: '#000000',
-                blur: 20,
+                color: '#ffffff',
+                blur: 10,
                 offsetx: 0,
                 offsety: 0,
             }
@@ -23,58 +23,58 @@ const wheelData = {
         "rods-main": {
             visible: true,
             color: '#ADD8E6',
-            scale: 1,
+            scale: 20,
             shadow: {
                 color: '#000000',
                 blur: 14,
-                offsetx: 0,
-                offsety: 0
+                offsetx: 5,
+                offsety: 5
             }
         },
         "rods-sub": {
             visible: true,
             color: '#ADD8E6',
-            scale: 1,
+            scale: 20,
             shadow: {
                 color: '#000000',
                 blur: 14,
-                offsetx: 0,
-                offsety: 0
+                offsetx: 4,
+                offsety: 4
             }
         },
         "texts": {
             visible: true,
-            color: "#c7c4ee",
-            scale: 30,
-            offset: 438,
+            color: "#000000",
+            scale: 37,
+            offset: 417,
             'offset-max': 600,
             shadow: {
-                color: '#000000',
-                blur: 10,
+                color: '#ffffff',
+                blur: 20,
                 offsetx: 0,
                 offsety: 0,
             },
         },
         "slicesimages": {
             visible: true,
-            scale: 16,
-            offset: 15,
+            scale: 18,
+            offset: 39,
             shadow: {
-                color: '#000000',
-                blur: 30,
+                color: '#ffffff',
+                blur: 3,
                 offsetx: 0,
                 offsety: 0,
             }
         },
         "center": {
             visible: true,
-            color: "#7d7dff",
+            color: "#2485c2",
             scale: 28,
             shadow: {
                 color: '#000000',
                 blur: 20,
                 offsetx: 0,
-                offsety: 2
+                offsety: 0
             }
         },
         "centerLogo": {
@@ -101,12 +101,12 @@ const wheelData = {
         "outerRing": {
             visible: true,
             color: "#5a349a",
-            scale: 30,
+            scale: 37,
             shadow: {
                 color: '#000000',
-                blur: 20,
-                offsetx: 0,
-                offsety: 0,
+                blur: 30,
+                offsetx: 10,
+                offsety: 10,
             }
         },
         "tongue": {
@@ -114,8 +114,9 @@ const wheelData = {
             outline: {
                 color: '#ADD8E6',
             },
-            middle: {
-                color: '#c0c0c0'
+            inner: {
+                color: '#c0c0c0',
+                alpha: 0.4,
             },
             shadow: {
                 color: '#000000',
@@ -127,7 +128,7 @@ const wheelData = {
         "slice-00": {
             visible: true,
             color: "#918bc5",
-            text: "Life",
+            text: "Life Science",
             icon: "life"
         },
         "slice-01": {

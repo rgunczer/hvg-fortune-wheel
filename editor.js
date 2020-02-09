@@ -128,8 +128,12 @@
             selectedVisualItem.outline.color = event.target.value;
         }
 
-        function middleColorInputHandler(event) {
-            selectedVisualItem.middle.color = event.target.value;
+        function innerColorInputHandler(event) {
+            selectedVisualItem.inner.color = event.target.value;
+        }
+
+        function innerColorAlphaInputHandler(event) {
+            selectedVisualItem.inner.alpha = event.target.value;
         }
 
         function createElemWithClass(type, classToAdd) {
@@ -163,7 +167,7 @@
             inputElement.addEventListener('change', eventHandlerFn);
         }
 
-        function createRangeEditor(currentValue, hostElem, labelText, idAndName, minValue, maxValue, rangeValuesArray, eventHandlerFn) {
+        function createRangeEditor(currentValue, hostElem, labelText, idAndName, rangeProps, eventHandlerFn) {
             const divElem = createElemWithClass('div', 'input');
             hostElem.appendChild(divElem);
 
@@ -174,9 +178,9 @@
             datalistElem.id = "tickmarks-" + idAndName;
 
             let options = '';
-            for(let i = 0; i < rangeValuesArray.length; ++i) {
-                options += `<option value="${rangeValuesArray[i]}" />`;
-            }
+            rangeProps.values.forEach(value => {
+                options += `<option value="${value}" />`;
+            });
 
             datalistElem.innerHTML = options;
 
@@ -186,10 +190,15 @@
             inputElement.type = 'range';
             inputElement.name = idAndName;
             inputElement.id = idAndName;
-            inputElement.min = minValue;
-            inputElement.max = maxValue;
-            // inputElement.list = dataListElem; // not working
-            inputElement.setAttribute('list', datalistElem.id );
+            inputElement.min = rangeProps.min;
+            inputElement.max = rangeProps.max;
+
+            if (rangeProps.step) {
+                inputElement.step = rangeProps.step;
+            }
+
+            // inputElement.list = dataListElem; // not working, SO
+            inputElement.setAttribute('list', datalistElem.id);
 
             divElem.appendChild(inputElement);
 
@@ -248,16 +257,32 @@
                     createColorEditor(selectedVisualItem.color, editorHostElem, 'Color:', 'color', colorChangeHandler);
                     break;
 
-                case 'scale':
-                    createRangeEditor(selectedVisualItem.scale, editorHostElem, 'Scale:', 'scale', 0, 100, range0to100by10, scaleInputHandler);
+                case 'scale': {
+                    const rangeSetup = {
+                        min: 0,
+                        max: 100,
+                        values: range0to100by10
+                    };
+                    createRangeEditor(selectedVisualItem.scale, editorHostElem, 'Scale:', 'scale', rangeSetup, scaleInputHandler);
+                }
                     break;
 
                 case 'offset': {
                     if (selectedVisualItem.hasOwnProperty('offset-max')) {
                         const offsetMax = selectedVisualItem['offset-max'];
-                        createRangeEditor(selectedVisualItem.offset, editorHostElem, 'Offset:', 'offset', 0, offsetMax, [0, 25, 50, 75, offsetMax], offsetInputHandler);
+                        const rangeSetup = {
+                            min: 0,
+                            max: offsetMax,
+                            values: [0, offsetMax * 0.25, offsetMax * 0.5 , offsetMax * 0.75, offsetMax]
+                        };
+                        createRangeEditor(selectedVisualItem.offset, editorHostElem, 'Offset:', 'offset', rangeSetup, offsetInputHandler);
                     } else {
-                        createRangeEditor(selectedVisualItem.offset, editorHostElem, 'Offset:', 'offset', 0, 100, range0to100by10, offsetInputHandler);
+                        const rangeSetup = {
+                            min: 0,
+                            max: 100,
+                            values: range0to100by10
+                        };
+                        createRangeEditor(selectedVisualItem.offset, editorHostElem, 'Offset:', 'offset', rangeSetup, offsetInputHandler);
                     }
                 }
                     break;
@@ -278,10 +303,22 @@
                         h4Elem.innerHTML = 'Shadow';
                         editorHostElem.appendChild(h4Elem);
 
+                        const rangeSetupOffsets = {
+                            min: -50,
+                            max: 50,
+                            values: [-50, -25, 0, 25, 50]
+                        };
+
+                        const rangeSetupBlur = {
+                            min: 0,
+                            max: 100,
+                            values: range0to100by10
+                        };
+
                         createColorEditor(selectedVisualItem.shadow.color, editorHostElem, 'Color:', 'shadow-color', shadowColorInputHandler);
-                        createRangeEditor(selectedVisualItem.shadow.blur, editorHostElem, 'Blur:', 'shadow-blur', 0, 100, range0to100by10, shadowBlurInputHandler);
-                        createRangeEditor(selectedVisualItem.shadow.offsetx, editorHostElem, 'Offset X:', 'shadow-offsetx', -50, 50, [-50, -25, 0, 25, 50], shadowOffsetXInputHandler);
-                        createRangeEditor(selectedVisualItem.shadow.offsety, editorHostElem, 'Offset Y:', 'shadow-offsety', -50, 50, [-50, -25, 0, 25, 50], shadowOffsetYInputHandler);
+                        createRangeEditor(selectedVisualItem.shadow.blur, editorHostElem, 'Blur:', 'shadow-blur', rangeSetupBlur, shadowBlurInputHandler);
+                        createRangeEditor(selectedVisualItem.shadow.offsetx, editorHostElem, 'Offset X:', 'shadow-offsetx', rangeSetupOffsets, shadowOffsetXInputHandler);
+                        createRangeEditor(selectedVisualItem.shadow.offsety, editorHostElem, 'Offset Y:', 'shadow-offsety', rangeSetupOffsets, shadowOffsetYInputHandler);
                     }
                         break;
 
@@ -289,8 +326,16 @@
                         createColorEditor(selectedVisualItem.outline.color, editorHostElem, 'Outline Color:', 'outline-color', outlineColorInputHandler);
                         break;
 
-                    case 'middle':
-                        createColorEditor(selectedVisualItem.outline.color, editorHostElem, 'Middle Color:', 'middle-color', middleColorInputHandler);
+                    case 'inner': {
+                        const rangeSetup = {
+                            min: 0,
+                            max: 1,
+                            values: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
+                            step: 0.1
+                        };
+                        createColorEditor(selectedVisualItem.inner.color, editorHostElem, 'Inner Color:', 'inner-color', innerColorInputHandler);
+                        createRangeEditor(selectedVisualItem.inner.alpha, editorHostElem, 'Inner Color Alpha:', 'inner-color-alpha', rangeSetup, innerColorAlphaInputHandler);
+                    }
                         break;
                 }
             }

@@ -2,12 +2,12 @@
 
     (function () {
         ['flashing-color', 'flashing-time', 'speed-min', 'speed-max'].forEach(id => {
-            const elem = document.querySelector('#' + id);
-            elem.value = wheelData[id];
+            const el = document.getElementById(id);
+            el.value = wheelData[id];
 
-            elem.addEventListener('change', (event) => {
+            el.addEventListener('change', (event) => {
                 console.log(`${id} changed`, event.target.value);
-                wheelData[id] = elem.value;
+                wheelData[id] = el.value;
             });
         });
     })();
@@ -18,20 +18,20 @@
         const testRandomnessButtonId = 'test-randomness';
         [showHideButtonId, showHideDebugButtonId, testRandomnessButtonId].forEach(buttonId => {
 
-            document.querySelector('#' + buttonId).addEventListener('click', (event) => {
+            document.getElementById(buttonId).addEventListener('click', (event) => {
 
                 const id = event.target.getAttribute('id');
 
                 switch (id) {
                     case showHideButtonId: {
-                        const elem = document.getElementById('editor');
-                        showHideElement(elem);
+                        const el = document.getElementById('editor');
+                        showHideElement(el);
                     }
                         break;
 
                     case showHideDebugButtonId: {
-                        const elem = document.getElementById('dump');
-                        showHideElement(elem);
+                        const el = document.getElementById('dump');
+                        showHideElement(el);
                     }
                         break;
 
@@ -50,18 +50,18 @@
     })();
 
     (function () {
-        const bgColorElem = document.querySelector('#page-bg-color');
+        const bgColorEl = document.querySelector('#page-bg-color');
         const style = getComputedStyle(document.body);
-        bgColorElem.value = rgbToHex(style.backgroundColor);
-        bgColorElem.addEventListener('change', (event) => {
+        bgColorEl.value = rgbToHex(style.backgroundColor);
+        bgColorEl.addEventListener('change', (event) => {
             console.log('page background color changed', event.target.value);
-            document.body.style.backgroundColor = bgColorElem.value;
+            document.body.style.backgroundColor = bgColorEl.value;
         });
 
         const pageBgColor = localStorage.getItem('bg-color');
         if (pageBgColor !== null) {
             document.body.style.backgroundColor = pageBgColor;
-            bgColorElem.value = rgbToHex(document.body.style.backgroundColor);
+            bgColorEl.value = rgbToHex(document.body.style.backgroundColor);
         }
 
         document.querySelector('#save-settings').addEventListener('click', () => {
@@ -70,82 +70,26 @@
 
         document.querySelector('#load-settings').addEventListener('click', () => {
             document.body.style.backgroundColor = localStorage.getItem('bg-color');
-            bgColorElem.value = rgbToHex(document.body.style.backgroundColor);
+            bgColorEl.value = rgbToHex(document.body.style.backgroundColor);
+        });
+
+        document.querySelector('#export-settings').addEventListener('click', () => {
+            const json = JSON.stringify(wheelData.visuals, null, 2);
+            navigator.clipboard.writeText(json).then(() => {
+                alert('Data is on Clipboard');
+            });
         });
     })();
 
     (function () {
-        const editorHostElem = document.querySelector('#editor-host');
-        const visualsListElem = document.querySelector('#wheel-visuals');
-
-        let selectedVisualItem = null;
+        const editorHostEl = document.querySelector('#editor-host');
+        const visualsListEl = document.querySelector('#wheel-visuals');
 
         function getWheelVisualOptions() {
-            let html = '';
-            Object.keys(wheelData.visuals).sort().forEach(key => {
-                html += `<option value='${key}'>${key}</option>`;
+            const html = Object.keys(wheelData.visuals).sort().map(key => {
+                return `<option value='${key}'>${key}</option>`;
             });
-            return html;
-        }
-
-        function visibilityCheckedHandler(event) {
-            selectedVisualItem.visible = event.target.checked;
-        }
-
-        function strokeVisibilityCheckedHandler(event) {
-            selectedVisualItem.stroke.visible = event.target.checked;
-        }
-
-        function colorChangeHandler(event) {
-            selectedVisualItem.color = event.target.value;
-        }
-
-        function scaleInputHandler(event) {
-            selectedVisualItem.scale = event.target.value;
-        }
-
-        function offsetInputHandler(event) {
-            selectedVisualItem.offset = event.target.value;
-        }
-
-        function textInputHandler(event) {
-            selectedVisualItem.text = event.target.value;
-        }
-
-        function shadowColorInputHandler(event) {
-            selectedVisualItem.shadow.color = event.target.value;
-        }
-
-        function strokeColorInputHandler(event) {
-            selectedVisualItem.stroke.color = event.target.value;
-        }
-
-        function strokeWidthInputHandler(event) {
-            selectedVisualItem.stroke.width = event.target.value;
-        }
-
-        function shadowBlurInputHandler(event) {
-            selectedVisualItem.shadow.blur = event.target.value;
-        }
-
-        function shadowOffsetXInputHandler(event) {
-            selectedVisualItem.shadow.offsetx = event.target.value;
-        }
-
-        function shadowOffsetYInputHandler(event) {
-            selectedVisualItem.shadow.offsety = event.target.value;
-        }
-
-        function outlineColorInputHandler(event) {
-            selectedVisualItem.outline.color = event.target.value;
-        }
-
-        function innerColorInputHandler(event) {
-            selectedVisualItem.inner.color = event.target.value;
-        }
-
-        function innerColorAlphaInputHandler(event) {
-            selectedVisualItem.inner.alpha = event.target.value;
+            return html.join('');
         }
 
         function createElemWithClass(type, classToAdd) {
@@ -161,112 +105,116 @@
             return el;
         }
 
-        function createColorEditor(currentValue, hostElem, labelText, idAndName, eventHandlerFn) {
-            const divElem = createElemWithClass('div', 'input');
-            hostElem.appendChild(divElem);
+        function createWrapperDivWithLabel(hostEl, labelText, idName) {
+            const divEl = createElemWithClass('div', 'input');
+            hostEl.appendChild(divEl);
 
-            const labelElement = createLabel(labelText, idAndName);
-            divElem.appendChild(labelElement);
+            const labelEl = createLabel(labelText, idName);
+            divEl.appendChild(labelEl);
 
-            const inputElement = document.createElement('input');
-            inputElement.type = 'color';
-            inputElement.name = idAndName;
-            inputElement.id = idAndName;
-            divElem.appendChild(inputElement);
-
-            inputElement.value = currentValue;
-
-            inputElement.addEventListener('change', eventHandlerFn);
+            return divEl;
         }
 
-        function createRangeEditor(currentValue, hostElem, labelText, idAndName, rangeProps, eventHandlerFn) {
-            const divElem = createElemWithClass('div', 'input');
-            hostElem.appendChild(divElem);
+        function setupEventHandler(el, eventName, obj, propName, eventTargetPropName = 'value') {
 
-            const labelElement = createLabel(labelText, idAndName);
-            divElem.appendChild(labelElement);
+            function createUpdateHandler(obj, propName) {
+                return function (event) {
+                    obj[propName] = event.target[eventTargetPropName];
+                }
+            }
 
-            const datalistElem = document.createElement('datalist');
-            datalistElem.id = "tickmarks-" + idAndName;
+            const eventHandlerFn = createUpdateHandler(obj, propName);
+            el.addEventListener(eventName, eventHandlerFn);
+        }
+
+        function createSection(name) {
+            const hrEl = document.createElement('hr');
+            editorHostEl.appendChild(hrEl);
+
+            const h4El = document.createElement('h4');
+            h4El.style.paddingBottom = '10px';
+            h4El.innerHTML = name;
+            editorHostEl.appendChild(h4El);
+        }
+
+        function createInputElement(hostEl, type, idAndName) {
+            const el = document.createElement('input');
+            el.type = type;
+            el.name = idAndName;
+            el.id = idAndName;
+            hostEl.appendChild(el);
+
+            return el;
+        }
+
+        function createColorEditor(obj, propName, hostEl, labelText, idAndName) {
+            const divEl = createWrapperDivWithLabel(hostEl, labelText);
+            const inputEl = createInputElement(divEl, 'color', idAndName);
+
+            inputEl.value = obj[propName];
+
+            setupEventHandler(inputEl, 'change', obj, propName);
+        }
+
+        function createRangeEditor(obj, propName, hostEl, labelText, idAndName, rangeProps) {
+            const divEl = createWrapperDivWithLabel(hostEl, labelText);
+
+            const datalistEl = document.createElement('datalist');
+            datalistEl.id = "tickmarks-" + idAndName;
 
             let options = '';
             rangeProps.values.forEach(value => {
                 options += `<option value="${value}" />`;
             });
 
-            datalistElem.innerHTML = options;
+            datalistEl.innerHTML = options;
 
-            divElem.appendChild(datalistElem);
+            divEl.appendChild(datalistEl);
 
-            const inputElement = document.createElement('input');
-            inputElement.type = 'range';
-            inputElement.name = idAndName;
-            inputElement.id = idAndName;
-            inputElement.min = rangeProps.min;
-            inputElement.max = rangeProps.max;
+            const inputEl = createInputElement(divEl, 'range', idAndName);
+            inputEl.min = rangeProps.min;
+            inputEl.max = rangeProps.max;
 
             if (rangeProps.step) {
-                inputElement.step = rangeProps.step;
+                inputEl.step = rangeProps.step;
             }
 
-            // inputElement.list = dataListElem; // not working, SO
-            inputElement.setAttribute('list', datalistElem.id);
+            // inputEl.list = dataListElem; // not working, SO
+            inputEl.setAttribute('list', datalistEl.id);
 
-            divElem.appendChild(inputElement);
+            inputEl.value = obj[propName];
 
-            inputElement.value = currentValue;
-
-            inputElement.addEventListener('input', eventHandlerFn);
+            setupEventHandler(inputEl, 'input', obj, propName);
         }
 
-        function createCheckBoxEditor(currentValue, hostElem, idName, labelText, eventHandlerFn) {
-            const divElement = createElemWithClass('div', 'input');
-            hostElem.appendChild(divElement);
+        function createCheckBoxEditor(obj, propName, hostEl, idName, labelText) {
+            const divEl = createWrapperDivWithLabel(hostEl, labelText);
+            const inputEl = createInputElement(divEl, 'checkbox', idName);
 
-            const labelElement = createLabel(labelText, idName);
-            divElement.appendChild(labelElement);
+            inputEl.checked = obj[propName];
 
-            const inputElement = document.createElement('input');
-            inputElement.type = 'checkbox';
-            inputElement.name = idName;
-            inputElement.id = idName;
-
-            divElement.appendChild(inputElement);
-
-            inputElement.checked = currentValue;
-
-            inputElement.addEventListener('change', eventHandlerFn);
+            setupEventHandler(inputEl, 'change', obj, propName, 'checked');
         }
 
-        function createTextEditor(currentValue, hostElem, labelText, idName, eventHandlerFn) {
-            const divElement = createElemWithClass('div', 'input');
-            hostElem.appendChild(divElement);
+        function createTextEditor(obj, propName, hostEl, labelText, idName) {
+            const divEl = createWrapperDivWithLabel(hostEl, labelText);
+            const inputEl = createInputElement(divEl, 'text', idName);
 
-            const labelElement = createLabel(labelText, idName);
-            divElement.appendChild(labelElement);
+            inputEl.value = obj[propName];
 
-            const inputElement = document.createElement('input');
-            inputElement.type = 'text';
-            inputElement.name = idName;
-            inputElement.id = idName;
-
-            divElement.appendChild(inputElement);
-
-            inputElement.value = currentValue;
-
-            inputElement.addEventListener('input', eventHandlerFn);
+            setupEventHandler(inputEl, 'input', obj, propName);
         }
 
-        function createEditorUi(key) {
+        function createEditorUi(selectedVisualItem, key) {
             const range0to100by10 = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
 
             switch (key) {
                 case 'visible':
-                    createCheckBoxEditor(selectedVisualItem.visible, editorHostElem, 'visibility', 'Visible:', visibilityCheckedHandler);
+                    createCheckBoxEditor(selectedVisualItem, key, editorHostEl, 'visibility', 'Visible:');
                     break;
 
                 case 'color':
-                    createColorEditor(selectedVisualItem.color, editorHostElem, 'Color:', 'color', colorChangeHandler);
+                    createColorEditor(selectedVisualItem, key, editorHostEl, 'Color:', 'color');
                     break;
 
                 case 'scale': {
@@ -275,7 +223,7 @@
                         max: 100,
                         values: range0to100by10
                     };
-                    createRangeEditor(selectedVisualItem.scale, editorHostElem, 'Scale:', 'scale', rangeSetup, scaleInputHandler);
+                    createRangeEditor(selectedVisualItem, key, editorHostEl, 'Scale:', 'scale', rangeSetup);
                 }
                     break;
 
@@ -287,33 +235,27 @@
                             max: offsetMax,
                             values: [0, offsetMax * 0.25, offsetMax * 0.5, offsetMax * 0.75, offsetMax]
                         };
-                        createRangeEditor(selectedVisualItem.offset, editorHostElem, 'Offset:', 'offset', rangeSetup, offsetInputHandler);
+                        createRangeEditor(selectedVisualItem, key, editorHostEl, 'Offset:', 'offset', rangeSetup);
                     } else {
                         const rangeSetup = {
                             min: 0,
                             max: 100,
                             values: range0to100by10
                         };
-                        createRangeEditor(selectedVisualItem.offset, editorHostElem, 'Offset:', 'offset', rangeSetup, offsetInputHandler);
+                        createRangeEditor(selectedVisualItem, key, editorHostEl, 'Offset:', 'offset', rangeSetup);
                     }
                 }
                     break;
 
                 case 'text':
-                    createTextEditor(selectedVisualItem.text, editorHostElem, 'Text:', 'text', textInputHandler);
+                    createTextEditor(selectedVisualItem, key, editorHostEl, 'Text:', 'text');
                     break;
             }
 
             if (isObject(selectedVisualItem[key])) {
                 switch (key) {
                     case 'shadow': {
-                        const hrElem = document.createElement('hr');
-                        editorHostElem.appendChild(hrElem);
-
-                        const h4Elem = document.createElement('h4');
-                        h4Elem.style.paddingBottom = '10px';
-                        h4Elem.innerHTML = 'Shadow';
-                        editorHostElem.appendChild(h4Elem);
+                        createSection('Shadow');
 
                         const rangeSetupOffsets = {
                             min: -50,
@@ -327,15 +269,15 @@
                             values: range0to100by10
                         };
 
-                        createColorEditor(selectedVisualItem.shadow.color, editorHostElem, 'Color:', 'shadow-color', shadowColorInputHandler);
-                        createRangeEditor(selectedVisualItem.shadow.blur, editorHostElem, 'Blur:', 'shadow-blur', rangeSetupBlur, shadowBlurInputHandler);
-                        createRangeEditor(selectedVisualItem.shadow.offsetx, editorHostElem, 'Offset X:', 'shadow-offsetx', rangeSetupOffsets, shadowOffsetXInputHandler);
-                        createRangeEditor(selectedVisualItem.shadow.offsety, editorHostElem, 'Offset Y:', 'shadow-offsety', rangeSetupOffsets, shadowOffsetYInputHandler);
+                        createColorEditor(selectedVisualItem.shadow, 'color', editorHostEl, 'Color:', 'shadow-color');
+                        createRangeEditor(selectedVisualItem.shadow, 'blur', editorHostEl, 'Blur:', 'shadow-blur', rangeSetupBlur);
+                        createRangeEditor(selectedVisualItem.shadow, 'offsetx', editorHostEl, 'Offset X:', 'shadow-offsetx', rangeSetupOffsets);
+                        createRangeEditor(selectedVisualItem.shadow, 'offsety', editorHostEl, 'Offset Y:', 'shadow-offsety', rangeSetupOffsets);
                     }
                         break;
 
                     case 'outline':
-                        createColorEditor(selectedVisualItem.outline.color, editorHostElem, 'Outline Color:', 'outline-color', outlineColorInputHandler);
+                        createColorEditor(selectedVisualItem.outline, 'color', editorHostEl, 'Outline Color:', 'outline-color');
                         break;
 
                     case 'inner': {
@@ -345,49 +287,40 @@
                             values: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
                             step: 0.1
                         };
-                        createColorEditor(selectedVisualItem.inner.color, editorHostElem, 'Inner Color:', 'inner-color', innerColorInputHandler);
-                        createRangeEditor(selectedVisualItem.inner.alpha, editorHostElem, 'Inner Color Alpha:', 'inner-color-alpha', rangeSetup, innerColorAlphaInputHandler);
+                        createColorEditor(selectedVisualItem.inner, 'color', editorHostEl, 'Inner Color:', 'inner-color');
+                        createRangeEditor(selectedVisualItem.inner, 'alpha', editorHostEl, 'Inner Color Alpha:', 'inner-color-alpha', rangeSetup);
                     }
                         break;
 
                     case 'stroke': {
-
-                        const hrElem = document.createElement('hr');
-                        editorHostElem.appendChild(hrElem);
-
-                        const h4Elem = document.createElement('h4');
-                        h4Elem.style.paddingBottom = '10px';
-                        h4Elem.innerHTML = 'Stroke';
-                        editorHostElem.appendChild(h4Elem);
+                        createSection('Stroke');
 
                         const rangeSetup = {
                             min: 0,
                             max: 10,
                             values: [0, 5, 10, 15, 20],
-                            // step: 0.1
                         };
-                        createCheckBoxEditor(selectedVisualItem.stroke.visible, editorHostElem, 'stroke-visibility', 'Stroke Visible:', strokeVisibilityCheckedHandler);
-                        createColorEditor(selectedVisualItem.stroke.color, editorHostElem, 'Stroke Color:', 'stroke-color', strokeColorInputHandler);
-                        createRangeEditor(selectedVisualItem.stroke.width, editorHostElem, 'Stroke Width:', 'stroke-width', rangeSetup, strokeWidthInputHandler);
+                        createCheckBoxEditor(selectedVisualItem.stroke, 'visible', editorHostEl, 'stroke-visibility', 'Stroke Visible:');
+                        createColorEditor(selectedVisualItem.stroke, 'color', editorHostEl, 'Stroke Color:', 'stroke-color');
+                        createRangeEditor(selectedVisualItem.stroke, 'width', editorHostEl, 'Stroke Width:', 'stroke-width', rangeSetup);
                     }
                         break;
                 }
             }
         }
 
-        visualsListElem.innerHTML = getWheelVisualOptions();
+        visualsListEl.innerHTML = getWheelVisualOptions();
 
-        visualsListElem.addEventListener('change', (event) => {
-            const visualItemName = event.target.value;
-            selectedVisualItem = wheelData.visuals[visualItemName];
+        visualsListEl.addEventListener('change', (event) => {
+            const selectedVisualItem = wheelData.visuals[event.target.value];
 
-            while (editorHostElem.firstChild) {
-                editorHostElem.removeChild(editorHostElem.firstChild);
+            while (editorHostEl.firstChild) {
+                editorHostEl.removeChild(editorHostEl.firstChild);
             }
 
             Object.keys(selectedVisualItem).forEach(key => {
                 if (selectedVisualItem.hasOwnProperty(key)) {
-                    createEditorUi(key);
+                    createEditorUi(selectedVisualItem, key);
                 }
             });
         });

@@ -92,6 +92,10 @@
             selectedVisualItem.visible = event.target.checked;
         }
 
+        function strokeVisibilityCheckedHandler(event) {
+            selectedVisualItem.stroke.visible = event.target.checked;
+        }
+
         function colorChangeHandler(event) {
             selectedVisualItem.color = event.target.value;
         }
@@ -110,6 +114,14 @@
 
         function shadowColorInputHandler(event) {
             selectedVisualItem.shadow.color = event.target.value;
+        }
+
+        function strokeColorInputHandler(event) {
+            selectedVisualItem.stroke.color = event.target.value;
+        }
+
+        function strokeWidthInputHandler(event) {
+            selectedVisualItem.stroke.width = event.target.value;
         }
 
         function shadowBlurInputHandler(event) {
@@ -273,7 +285,7 @@
                         const rangeSetup = {
                             min: 0,
                             max: offsetMax,
-                            values: [0, offsetMax * 0.25, offsetMax * 0.5 , offsetMax * 0.75, offsetMax]
+                            values: [0, offsetMax * 0.25, offsetMax * 0.5, offsetMax * 0.75, offsetMax]
                         };
                         createRangeEditor(selectedVisualItem.offset, editorHostElem, 'Offset:', 'offset', rangeSetup, offsetInputHandler);
                     } else {
@@ -335,6 +347,28 @@
                         };
                         createColorEditor(selectedVisualItem.inner.color, editorHostElem, 'Inner Color:', 'inner-color', innerColorInputHandler);
                         createRangeEditor(selectedVisualItem.inner.alpha, editorHostElem, 'Inner Color Alpha:', 'inner-color-alpha', rangeSetup, innerColorAlphaInputHandler);
+                    }
+                        break;
+
+                    case 'stroke': {
+
+                        const hrElem = document.createElement('hr');
+                        editorHostElem.appendChild(hrElem);
+
+                        const h4Elem = document.createElement('h4');
+                        h4Elem.style.paddingBottom = '10px';
+                        h4Elem.innerHTML = 'Stroke';
+                        editorHostElem.appendChild(h4Elem);
+
+                        const rangeSetup = {
+                            min: 0,
+                            max: 10,
+                            values: [0, 5, 10, 15, 20],
+                            // step: 0.1
+                        };
+                        createCheckBoxEditor(selectedVisualItem.stroke.visible, editorHostElem, 'stroke-visibility', 'Stroke Visible:', strokeVisibilityCheckedHandler);
+                        createColorEditor(selectedVisualItem.stroke.color, editorHostElem, 'Stroke Color:', 'stroke-color', strokeColorInputHandler);
+                        createRangeEditor(selectedVisualItem.stroke.width, editorHostElem, 'Stroke Width:', 'stroke-width', rangeSetup, strokeWidthInputHandler);
                     }
                         break;
                 }

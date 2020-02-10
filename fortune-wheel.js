@@ -316,12 +316,12 @@ function drawOuterRing(params, obj) {
 function drawInnerRing(params, obj) {
     applyShadowSettings(obj);
 
-    context.fillStyle = obj.color;
+    context.strokeStyle = obj.color;
+    context.lineWidth = obj.scale;
 
     context.beginPath();
-    context.moveTo(wheelBody.position.x, wheelBody.position.y);
     context.arc(wheelBody.position.x, wheelBody.position.y, params.radius * toInt(obj.scale) * 0.01, 0, TWO_PI);
-    context.fill();
+    context.stroke();
 }
 
 function drawCenter(params, obj) {
@@ -340,7 +340,9 @@ function drawTexts(params, obj) {
     let sliceAngle = deg2rad(sliceDegree);
 
     context.fillStyle = obj.color;
-    context.font = obj.scale + 'px Lobster';
+    context.strokeStyle = obj.stroke.color;
+    context.lineWidth = obj.stroke.width;
+    context.font = 'bold ' + obj.scale + 'px ' + obj['font-face'];
     // context.font = obj.scale + 'px Permanent Marker';
 
     for (let i = 0; i < slices.length; ++i) {
@@ -354,6 +356,11 @@ function drawTexts(params, obj) {
         context.textBaseline = 'middle';
         context.textAlign = 'right';
         context.fillText(slices[i].text, params.radius * obj.offset * 0.001 + (params.radius / 2), 0);
+
+        if (obj.stroke.visible) {
+            context.shadowColor = 'transparent';
+            context.strokeText(slices[i].text, params.radius * obj.offset * 0.001 + (params.radius / 2), 0);
+        }
         context.restore();
     }
 }

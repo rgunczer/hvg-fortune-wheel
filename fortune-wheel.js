@@ -309,7 +309,7 @@ function drawOuterRing(params, obj) {
     context.strokeStyle = obj.color;
     context.lineWidth = obj.scale;
     context.beginPath();
-    context.arc(wheelBody.position.x, wheelBody.position.y, params.radius, 0, -TWO_PI);
+    context.arc(wheelBody.position.x, wheelBody.position.y, params.radius, 0, TWO_PI);
     context.stroke();
 }
 
@@ -413,7 +413,7 @@ function drawTongue(params, obj) {
     context.fill();
 }
 
-function drawDebugCollisionCircles(params) {
+function drawCollisionCircles(params) {
     const { arr, radius } = calcCollisionCircles();
 
     for (let i = 0; i < arr.length; ++i) {
@@ -470,14 +470,15 @@ function draw() {
     drawTask(params, visuals.dividers, drawDividers);
     drawTask(params, visuals.texts, drawTexts);
     drawTask(params, visuals.slicesimages, drawSlicesImages);
-    drawTask(params, visuals.innerRing, drawInnerRing);
+    drawTask(params, visuals['inner-ring'], drawInnerRing);
     drawTask(params, visuals.center, drawCenter);
-    drawTask(params, visuals.outerRing, drawOuterRing);
+    drawTask(params, visuals['outer-ring-1'], drawOuterRing);
+    drawTask(params, visuals['outer-ring-2'], drawOuterRing);
     drawTask(params, visuals['rods-main'], drawRodsMain);
     drawTask(params, visuals['rods-sub'], drawRodsSub);
     drawTask(params, visuals.tongue, drawTongue);
-    drawTask(params, visuals.centerLogo, drawCenterImage);
-    drawTask(params, visuals.collisionCircles, drawDebugCollisionCircles);
+    drawTask(params, visuals['center-logo'], drawCenterImage);
+    drawTask(params, visuals['collision-circles'], drawCollisionCircles);
 
     document.getElementById('dump').innerHTML = JSON.stringify(dump, null, 2);
 }

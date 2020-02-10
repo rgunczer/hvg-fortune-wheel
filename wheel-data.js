@@ -6,7 +6,7 @@ const wheelData = {
     "shadow-range-min": -50,
     "shadow-range-max": 50,
     visuals: {
-        "collisionCircles": {
+        "collision-circles": {
             visible: false
         },
         "dividers": {
@@ -77,7 +77,7 @@ const wheelData = {
                 offsety: 0
             }
         },
-        "centerLogo": {
+        "center-logo": {
             visible: true,
             scale: 16,
             shadow: {
@@ -87,7 +87,7 @@ const wheelData = {
                 offsety: 2
             }
         },
-        "innerRing": {
+        "inner-ring": {
             visible: true,
             color: "#7054b8",
             scale: 28,
@@ -98,13 +98,24 @@ const wheelData = {
                 offsety: 0,
             }
         },
-        "outerRing": {
+        "outer-ring-1": {
             visible: true,
             color: "#5a349a",
             scale: 37,
             shadow: {
                 color: '#000000',
                 blur: 30,
+                offsetx: 10,
+                offsety: 10,
+            }
+        },
+        "outer-ring-2": {
+            visible: true,
+            color: "#663aad",
+            scale: 10,
+            shadow: {
+                color: '#000000',
+                blur: 10,
                 offsetx: 10,
                 offsety: 10,
             }

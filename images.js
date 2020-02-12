@@ -1,3 +1,5 @@
+'use strict';
+
 const imagesData = {
     tcs: {
         fileName: 'tcs-logo',

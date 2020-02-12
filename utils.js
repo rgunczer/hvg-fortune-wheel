@@ -1,3 +1,5 @@
+'use strict';
+
 function getRandom(lower, upper) {
     return Math.floor(lower + (Math.random() * (upper - lower + 1)));
 }
@@ -78,18 +80,6 @@ function toKebabCase(str) {
         .match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)
         .map(x => x.toLowerCase())
         .join('-');
-}
-
-function applyShadowSettings(obj) {
-    if (obj) {
-        const shadow = obj.shadow;
-        if (shadow) {
-            context.shadowColor = shadow.color;
-            context.shadowBlur = shadow.blur;
-            context.shadowOffsetX = shadow.offsetx;
-            context.shadowOffsetY = shadow.offsety;
-        }
-    }
 }
 
 function toInt(value) {

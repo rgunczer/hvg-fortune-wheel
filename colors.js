@@ -1,3 +1,5 @@
+'use strict';
+
 const TCSColors = {
     LightBlue: {
         r: 131,

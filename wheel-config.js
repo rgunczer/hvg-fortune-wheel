@@ -1,8 +1,10 @@
+'use strict';
+
 const wheelData = {
     "flashing-color": "#ffff00",
     "flashing-time": 100,
-    "speed-min": 30,
-    "speed-max": 70,
+    "speed-min": 60,
+    "speed-max": 90,
     "shadow-range-min": -50,
     "shadow-range-max": 50,
     visuals: {
@@ -45,26 +47,26 @@ const wheelData = {
         "texts": {
             "visible": true,
             "color": "#ffffff",
-            "scale": "40",
-            "offset": 417,
+            "scale": "30",
+            "offset": "416",
             "offset-max": 600,
-            "font-face": "PT Sans Narrow",
+            "font-face": "TCSFamilyBold",
             "shadow": {
-                "color": "#000000",
-                "blur": "20",
-                "offsetx": "4",
+                "color": "#400040",
+                "blur": "10",
+                "offsetx": "0",
                 "offsety": "0"
             },
             "stroke": {
                 "visible": false,
-                "color": "#e8e8e8",
+                "color": "#1a1a1a",
                 "width": "0"
             }
         },
         "slicesimages": {
             "visible": true,
-            "scale": "25",
-            "offset": "38",
+            "scale": "17",
+            "offset": "33",
             "shadow": {
                 "color": "#ffffff",
                 "blur": 3,
@@ -85,7 +87,7 @@ const wheelData = {
         },
         "center-logo": {
             "visible": true,
-            "scale": 12,
+            "scale": "20",
             "shadow": {
                 "color": "#000000",
                 "blur": 2,

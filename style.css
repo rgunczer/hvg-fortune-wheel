@@ -1,3 +1,13 @@
+@font-face {
+    font-family: TCSFamilyRegular;
+    src: url("assets/font//Economica-Regular-OTF.otf") format("opentype");
+}
+
+@font-face {
+    font-family: TCSFamilyBold;
+    src: url("assets/font//Economica-Bold-OTF.otf") format("opentype");
+}
+
 body {
     height: 100%;
     margin: 0px;
@@ -33,7 +43,7 @@ h4 {
 .custom-button {
     cursor: pointer;
     margin-right: 10px;
-    width: 200px;
+    width: 160px;
     background-color: #f1f1f1;
     display: block;
     color: #000;
@@ -44,7 +54,7 @@ h4 {
     text-align: center;
     border-radius: 20px;
     box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.5);
-    font-family: 'Knewave', cursive;
+    font-family: 'TCSFamilyBold';
 }
 
 .custom-button:hover {
@@ -101,15 +111,13 @@ h4 {
 }
 
 .question-text {
-    font-family: 'Lobster', cursive;
-    /* font-family: 'Knewave', cursive; */
+    font-family: 'TCSFamilyRegular';
     font-size: 4em;
     text-align: center;
 }
 
 .question-title {
-    /* font-family: 'Knewave', cursive; */
-    font-family: 'Lobster', cursive;
+    font-family: 'TCSFamilyBold';
     font-size: 3.5em;
     text-align: center;
     padding: 0;

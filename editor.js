@@ -70,9 +70,12 @@
                     if (colorObj) {
                         obj[propName] = rgbObjToHex(predefinedColors[key]);
                         elToUpdate.value = obj[propName];
-                        if (customCallbackFn) {
-                            customCallbackFn();
-                        }
+                    } else {
+                        obj[propName] = key;
+                    }
+
+                    if (customCallbackFn) {
+                        customCallbackFn();
                     }
                 }
             }

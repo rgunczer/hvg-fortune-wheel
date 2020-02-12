@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="shortcut icon" href="assets/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/assets/favicon.ico" type="image/x-icon">
     <title>HVG Fortune Wheel - TCS</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css?family=Lobster&display=swap" rel="stylesheet">
@@ -41,35 +43,22 @@
             <button id="test-randomness">Test Randomness</button>
             <pre id="dump" style="display: none;"></pre>
             <div id="editor" style="display: block;">
-                <label>Settings: </label>
-                <button id="save-settings">Save</button>
-                <button id="load-settings">Load</button>
-                <button id="export-settings">Export To Clipboard</button>
+
+                <div style="margin-top: 10px;">
+                    <label>Settings: </label>
+                    <button id="save-settings">Save</button>
+                    <button id="load-settings">Load</button>
+                    <button id="export-settings">Export To Clipboard</button>
+                </div>
 
                 <hr>
                 <h4>Page</h4>
-                <div class="input">
-                    <label for="page-bg-color">Background Color:</label>
-                    <input type="color" id="page-bg-color" name="page-bg-color" value="#ffffff">
+                <div id="page">
                 </div>
 
                 <hr>
                 <h4>Wheel</h4>
-                <div class="input">
-                    <label for="flashing-color">Flashing Color:</label>
-                    <input type="color" id="flashing-color" name="flashing-color" value="#ff0000">
-                </div>
-                <div class="input">
-                    <label for="flashing-time">Flashing Time:</label>
-                    <input type="range" id="flashing-time" name="flashing-time" min="10" max="300">
-                </div>
-                <div class="input">
-                    <label for="speed-min">Min Speed:</label>
-                    <input type="range" id="speed-min" name="speed-min" min="20" max="200">
-                </div>
-                <div class="input">
-                    <label for="speed-max">Max Speed:</label>
-                    <input type="range" id="speed-max" name="speed-max" min="20" max="200">
+                <div id="wheel">
                 </div>
 
                 <hr>

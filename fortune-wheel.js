@@ -37,8 +37,8 @@ function fortuneWheel(options, canvas) {
         update(fillStyle) {
             this.counter++;
 
-            if (this.counter > wheelData['flashing-time']) {
-                const slices = wheelData.slices;
+            if (this.counter > options['flashing-time'].value) {
+                const slices = options.slices;
 
                 questionTitleElem.innerHTML = slices[this.index].text;
                 modalElem.style.display = 'block';
@@ -53,7 +53,6 @@ function fortuneWheel(options, canvas) {
                     }
 
                     slices[this.index].color = rgbToHex2(color.r, color.r, color.r);
-                    console.log(slices[this.index].color);
                 }
 
                 this.setup();
@@ -64,7 +63,7 @@ function fortuneWheel(options, canvas) {
                     this.fill = !this.fill;
                 }
                 if (this.fill) {
-                    return wheelData['flashing-color']
+                    return options['flashing-color']
                 } else {
                     return fillStyle;
                 }
@@ -97,7 +96,7 @@ function fortuneWheel(options, canvas) {
                 context.fillStyle = flasher.update(context.fillStyle);
             }
 
-            if (wheelData.slices[i].visible) {
+            if (options.slices[i].visible) {
                 context.fill();
             }
         }
@@ -230,7 +229,7 @@ function fortuneWheel(options, canvas) {
     }
 
     function drawSlicesImages(params, obj) {
-        const slices = wheelData.slices;
+        const slices = options.slices;
         let sliceDegree = 360.0 / slices.length;
         let sliceAngle = deg2rad(sliceDegree);
 
@@ -320,8 +319,8 @@ function fortuneWheel(options, canvas) {
     function draw() {
         const params = {
             radius: getRadius(),
-            slices: wheelData.slices,
-            sliceAngle: deg2rad(360.0 / wheelData.slices.length),
+            slices: options.slices,
+            sliceAngle: deg2rad(360.0 / options.slices.length),
             cx: wheelBody.position.x,
             cy: wheelBody.position.y,
             angle: wheelBody.angle
@@ -336,7 +335,7 @@ function fortuneWheel(options, canvas) {
             context.globalAlpha = 1;
         }
 
-        const { visuals } = wheelData;
+        const { visuals } = options;
 
         drawTask(params, { visible: true }, drawSlices);
         drawTask(params, visuals.dividers, drawDividers);
@@ -359,8 +358,8 @@ function fortuneWheel(options, canvas) {
         spinning = true;
         flasher.setup();
 
-        const speedMin = toInt(options['speed-min']);
-        const speedMax = toInt(options['speed-max']);
+        const speedMin = toInt(options['speed-min'].value);
+        const speedMax = toInt(options['speed-max'].value);
         const velocity = getRandom(speedMin, speedMax);
         // const velocity = speedMax;
 
@@ -383,8 +382,6 @@ function fortuneWheel(options, canvas) {
     }
 
     function init() {
-        console.log('init...');
-
         const cw = canvas.width;
         const ch = canvas.height;
 
@@ -502,25 +499,20 @@ function fortuneWheel(options, canvas) {
         engine.velocityIterations = 8;
         engine.constraintIterations = 4;
 
-        const defaultRotationDegree = getRandom(5, 25);
+        const defaultRotationDegree = getRandom(12, 14);
         Body.rotate(wheelBody, deg2rad(defaultRotationDegree));
-        console.log(defaultRotationDegree);
     }
 
     function update() {
         Engine.update(engine);
-        // const delta = (1 / 3) / 60 * 1000;
-        // console.log(delta)
-        // Engine.update(engine, delta);
-        // Engine.update(engine, delta);
-        // Engine.update(engine, delta);
-
-        checkSelectedSliceAfterSpinning();
+        if (spinning) {
+            checkSelectedSliceAfterSpinning();
+        }
     }
 
     function checkSelectedSliceAfterSpinning() {
-        if (spinning && wheelBody.angularSpeed < 0.001 && tongueBody.angularSpeed < 0.001) {
-            const slices = wheelData.slices;
+        if (wheelBody.angularSpeed < 0.001 && tongueBody.angularSpeed < 0.001) {
+            const slices = options.slices;
             const { arr, radius } = calcCollisionCircles();
 
             for (let i = 0; i < arr.length; ++i) {
@@ -546,7 +538,7 @@ function fortuneWheel(options, canvas) {
     }
 
     function calcCollisionCircles() {
-        const slices = wheelData.slices;
+        const slices = options.slices;
         const x = getRadius();
         const arr = [];
 
@@ -584,7 +576,7 @@ function fortuneWheel(options, canvas) {
         toggleDrawPhysics,
         testRandomness () {
             testRandomness = true;
-            wheelData.slices.forEach(slice => {
+            options.slices.forEach(slice => {
                 slice.color = rgbToHex2(255, 255, 255);
             });
         }

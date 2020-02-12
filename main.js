@@ -13,12 +13,10 @@ modalElem.addEventListener('click', () => {
 });
 
 document.querySelector('#spinTheWheel').addEventListener('click', () => {
-    console.log('spin');
     fw.spin();
 });
 
 document.querySelector('#stopTheWheel').addEventListener('click', () => {
-    console.log('stop');
     fw.stop();
 });
 
@@ -43,7 +41,6 @@ function loadImages() {
         let loadedImageCount = 0;
 
         const onload = () => {
-            console.log('image loaded');
             if (++loadedImageCount === imagesDataKeys.length) {
                 resolve('all images loaded');
             }
@@ -51,7 +48,6 @@ function loadImages() {
 
         imagesDataKeys.forEach(key => {
             const imageObj = imagesData[key];
-            console.log(`loading [${imageObj.fileName}] image...`);
             imageObj.img = new Image();
             imageObj.img.src = `./assets/${imageObj.fileName}.png`;
             imageObj.img.onload = onload
@@ -84,8 +80,7 @@ function animate() {
 
 (function init() {
     setCanvasSize();
-    loadImages().then(resp => {
-        console.log(`${resp} begin`);
+    loadImages().then(() => {
         fw = fortuneWheel(wheelData, getCanvas());
         fw.init();
         window.requestAnimationFrame(animate);

@@ -148,6 +148,11 @@ input[type=range] {
     width: 170px;
 }
 
+input[type=color] {
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
 .input > label {
     display: inline-block;
     min-width: 75px;

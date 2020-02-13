@@ -1,20 +1,32 @@
 [
     {
-        "text": "Name 2 support departments without which a company would not be able to operate on a daily basis!"
+        "type": "corporate",
+        "text": "Name 2 support departments without which a company would not be able to operate on a daily basis!",
+        "choices": null
     },
     {
-        "text": "Guess in which countries TCS is present in Europe?"
+        "type": "any",
+        "text": "Guess in which countries TCS is present in Europe?",
+        "choices": null
     },
     {
-        "text": "Which of the following qualities are NOT required for a TCSer who works at the Life Sciences field? IT skills, analythical thinking, good communication skills, exotic language skills"
+        "type": "life",
+        "text": "Which of the following qualities are NOT required for a TCSer who works at the Life Sciences field?",
+        "choices": "IT skills, analythical thinking, good communication skills, exotic language skills"
     },
     {
-        "text": "How many service areas do we have at TCS Hungary?"
+        "type": "any",
+        "text": "How many service areas do we have at TCS Hungary?",
+        "choices": null
     },
     {
-        "text": "Guess how many employees do we have at TCS Hungary?"
+        "type": "any",
+        "text": "Guess how many employees do we have at TCS Hungary?",
+        "choices": null
     },
     {
-        "text": "Guess how many languages do we speak at TCS Hungary?"
+        "type": "any",
+        "text": "Guess how many languages do we speak at TCS Hungary?",
+        "choices": null
     }
 ]

@@ -5,7 +5,7 @@ const dump = {};
 let questions;
 
 const modalElem = document.querySelector('#question-modal');
-const questionTitleElem = document.querySelector('#question-title');
+const questionChoicesElem = document.querySelector('#question-choices');
 const questionTextElem = document.querySelector('#question-text');
 
 modalElem.addEventListener('click', () => {
@@ -103,18 +103,30 @@ function loadQuestions(callback) {
     xobj.send(null);
 }
 
-let previousIndex = -1;
-function showRandomQuestion(titleText) {
-    questionTitleElem.innerHTML = titleText;
-    let rndNum = previousIndex;
+function showRandomQuestion(selectedSlice) {
+    let filteredQuestions = [];
 
-    while (rndNum === previousIndex) {
-        rndNum = getRandom(0, questions.length - 1);
+    switch (selectedSlice) {
+        case "corporate":
+        case "life":
+            filteredQuestions = questions.filter(x => x.type === selectedSlice);
+            break;
+
+        default:
+            filteredQuestions = questions.filter(x => x.type === "any");
     }
 
-    console.log('random: ' + rndNum);
-    previousIndex = rndNum;
+    // let rndNum = -1;
 
-    questionTextElem.innerHTML = questions[rndNum].text;
+    let rndNum = getRandom(0, filteredQuestions.length - 1);
+    console.log('length: ' + filteredQuestions.length + '   random:  ' + rndNum);
+
+    questionTextElem.innerHTML = filteredQuestions[rndNum].text;
+    if (filteredQuestions[rndNum].choices) {
+        questionChoicesElem.innerHTML = filteredQuestions[rndNum].choices;
+    } else {
+        questionChoicesElem.innerHTML = null;
+    }
+
     modalElem.style.display = 'block';
 }

@@ -116,13 +116,11 @@ h4 {
     text-align: center;
 }
 
-.question-title {
-    font-family: 'TCSFamilyBold';
-    font-size: 3.5em;
+.question-choices {
+    font-family: 'TCSFamilyRegular';
+    font-size: 4em;
     text-align: center;
-    padding: 0;
-    margin: 0;
-    border: 0;
+    font-weight: bold;
 }
 
 #dump {

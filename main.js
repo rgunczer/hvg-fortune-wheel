@@ -2,6 +2,7 @@
 
 let fw;
 const dump = {};
+let questions;
 
 const modalElem = document.querySelector('#question-modal');
 const questionTitleElem = document.querySelector('#question-title');
@@ -85,42 +86,35 @@ function animate() {
         fw.init();
         window.requestAnimationFrame(animate);
     });
+    loadQuestions(function (response) {
+        questions = JSON.parse(response);
+    });
 })();
 
-// QUESTIONS
-var lastQuestionNumber = 6;
-var addQuestionButton = document.getElementById('addQuestion');
-
-function addQuestion() {
-    lastQuestionNumber++;
-
-    var div = document.createElement('div');
-    div.setAttribute('class', 'input');
-    document.getElementById('questions').appendChild(div);
-
-    var label = document.createElement('label');
-    label.setAttribute('for', 'q' + lastQuestionNumber);
-    label.innerHTML = 'Text: ';
-    div.appendChild(label);
-
-    var input = document.createElement('input');
-    input.name = 'q' + lastQuestionNumber;
-    input.id = 'q' + lastQuestionNumber;
-    input.value = 'test question ' + lastQuestionNumber;
-    div.appendChild(input);
+function loadQuestions(callback) {
+    var xobj = new XMLHttpRequest();
+    xobj.overrideMimeType("application/json");
+    xobj.open('GET', 'questions.json', true);
+    xobj.onreadystatechange = function () {
+        if (xobj.readyState == 4 && xobj.status == "200") {
+            callback(xobj.responseText);
+        }
+    };
+    xobj.send(null);
 }
 
-addQuestionButton.addEventListener('click', () => {
-    addQuestion();
-});
+let previousIndex = -1;
+function showRandomQuestion(titleText) {
+    questionTitleElem.innerHTML = titleText;
+    let rndNum = previousIndex;
 
-function showRandomQuestion() {
-    var rndNum = getRndInteger(1, lastQuestionNumber);
-    var questionText = document.querySelector('#q' + rndNum).value;
+    while (rndNum === previousIndex) {
+        rndNum = getRandom(0, questions.length - 1);
+    }
 
-    questionTextElem.innerHTML = questionText; // + '    ' + Date.now();
-}
+    console.log('random: ' + rndNum);
+    previousIndex = rndNum;
 
-function getRndInteger(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+    questionTextElem.innerHTML = questions[rndNum].text;
+    modalElem.style.display = 'block';
 }

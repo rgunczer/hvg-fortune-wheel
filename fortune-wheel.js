@@ -40,8 +40,7 @@ function fortuneWheel(options, canvas) {
             if (this.counter > options['flashing-time'].value) {
                 const slices = options.slices;
 
-                questionTitleElem.innerHTML = slices[this.index].text;
-                modalElem.style.display = 'block';
+                showRandomQuestion(slices[this.index].text);
 
                 if (testRandomness) {
                     const color = hexToRgb(slices[this.index].color);

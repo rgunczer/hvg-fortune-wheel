@@ -3,7 +3,7 @@
 const wheelData = (function () {
 
     let config = {
-        "flashing-color": "#ffff00",
+        "flashing-color": "#ffffff",
         "flashing-time": {
             "range-min": 0,
             "range-max": 300,
@@ -21,14 +21,14 @@ const wheelData = (function () {
         },
         "shadow-range-min": -50,
         "shadow-range-max": 50,
-        visuals: {
+        "visuals": {
             "collision-circles": {
                 "visible": false
             },
             "dividers": {
                 "visible": true,
                 "color": "#ffffff",
-                "scale": 0,
+                "scale": "0",
                 "shadow": {
                     "color": "#ffffff",
                     "blur": 10,
@@ -42,9 +42,9 @@ const wheelData = (function () {
                 "scale": 20,
                 "shadow": {
                     "color": "#000000",
-                    "blur": 14,
-                    "offsetx": 5,
-                    "offsety": 5
+                    "blur": "23",
+                    "offsetx": "0",
+                    "offsety": "3"
                 }
             },
             "rods-sub": {
@@ -59,7 +59,7 @@ const wheelData = (function () {
                 }
             },
             "texts": {
-                "visible": true,
+                "visible": false,
                 "color": "#ffffff",
                 "scale": "30",
                 "offset": "416",
@@ -79,8 +79,8 @@ const wheelData = (function () {
             },
             "slicesimages": {
                 "visible": true,
-                "scale": "17",
-                "offset": "33",
+                "scale": "30",
+                "offset": "70",
                 "shadow": {
                     "color": "#ffffff",
                     "blur": 3,
@@ -122,7 +122,7 @@ const wheelData = (function () {
             },
             "outer-ring-1": {
                 "visible": true,
-                "color": "#5a349a",
+                "color": "#2564c2",
                 "scale": 37,
                 "shadow": {
                     "color": "#000000",
@@ -133,11 +133,11 @@ const wheelData = (function () {
             },
             "outer-ring-2": {
                 "visible": true,
-                "color": "#663aad",
-                "scale": 10,
+                "color": "#2564c2",
+                "scale": "26",
                 "shadow": {
                     "color": "#000000",
-                    "blur": "20",
+                    "blur": "40",
                     "offsetx": "0",
                     "offsety": "0"
                 }
@@ -194,14 +194,15 @@ const wheelData = (function () {
                 "text": "IT Services",
                 "icon": "itservices"
             }
-
         },
         slices: []
-    };
+    }
 
     const savedConfig = localStorage.getItem('fortune-wheel-config');
     if (savedConfig) {
-        config = JSON.parse(savedConfig);
+        if (confirm('Saved wheel configuration found. Do you want to use it?')) {
+            config = JSON.parse(savedConfig);
+        }
     }
 
     config.slices.length = 0;

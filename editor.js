@@ -2,6 +2,9 @@
 
 (function (predefinedColors) {
 
+    const storageKeyWheelConfig = 'fortune-wheel-config';
+
+
     class DomUtils {
 
         static createSection(name, hostEl) {
@@ -247,12 +250,24 @@
 
         document.querySelector('#save-settings').addEventListener('click', () => {
             localStorage.setItem('bg-color', document.body.style.backgroundColor);
-            localStorage.setItem('fortune-wheel-config', JSON.stringify(wheelData));
+            localStorage.setItem(storageKeyWheelConfig, JSON.stringify(wheelData));
             location.reload();
         });
 
         document.querySelector('#load-settings').addEventListener('click', () => {
             location.reload();
+        });
+
+        document.querySelector('#delete-settings').addEventListener('click', () => {
+            if (localStorage.getItem(storageKeyWheelConfig) === null) {
+                alert('No wheel configuration found.')
+                return;
+            }
+
+            if (confirm('Delete locally saved wheel configuration?')) {
+                localStorage.removeItem(storageKeyWheelConfig);
+                location.reload();
+            }
         });
 
         document.querySelector('#export-settings').addEventListener('click', () => {

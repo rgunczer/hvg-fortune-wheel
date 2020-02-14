@@ -9,8 +9,7 @@ const questionChoicesElem = document.querySelector('#question-choices');
 const questionTextElem = document.querySelector('#question-text');
 
 modalElem.addEventListener('click', () => {
-    modalElem.style.display = 'none';
-    questionTextElem.innerHTML = 'What do you get when you cross a mentally ill loner with a society that abandons him and treats him like trash?';
+    hideModalAndReset();
 });
 
 document.querySelector('#spinTheWheel').addEventListener('click', () => {
@@ -30,10 +29,33 @@ document.querySelector('#renderMatter').addEventListener('click', () => {
     fw.toggleDrawPhysics();
 });
 
+document.addEventListener('keyup', (event) => {
+    const enter = 13;
+    const space = 32;
+    if (event.keyCode === space) {
+        if (fw.isSpinning()) {
+            return;
+        } else if (isModalVisible()) {
+            hideModalAndReset();
+        } else {
+            fw.spin();
+        }
+    }
+});
+
 window.addEventListener('resize', () => {
     setCanvasSize();
     fw.init();
 }, false);
+
+function isModalVisible() {
+    return modalElem.style.display === 'block';
+}
+
+function hideModalAndReset() {
+    modalElem.style.display = 'none';
+    questionTextElem.innerHTML = '';
+}
 
 function loadImages() {
     return new Promise((resolve, reject) => {

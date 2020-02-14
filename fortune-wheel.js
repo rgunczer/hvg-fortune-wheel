@@ -578,6 +578,9 @@ function fortuneWheel(options, canvas) {
             options.slices.forEach(slice => {
                 slice.color = rgbToHex2(255, 255, 255);
             });
+        },
+        isSpinning() {
+            return spinning;
         }
     };
 }

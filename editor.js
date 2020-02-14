@@ -4,7 +4,6 @@
 
     const storageKeyWheelConfig = 'fortune-wheel-config';
 
-
     class DomUtils {
 
         static createSection(name, hostEl) {
@@ -171,36 +170,35 @@
     }
 
     (function () {
-        const showHideButtonId = 'show-hide-editor';
-        const showHideDebugButtonId = 'show-hide-debug';
-        const testRandomnessButtonId = 'test-randomness';
-        [showHideButtonId, showHideDebugButtonId, testRandomnessButtonId].forEach(buttonId => {
+        document.addEventListener('keypress', (event) => {
+            const keyEditor = 69;
+            const keyDebug = 68;
+            const keyRandomness = 82;
+            const keyButtons = 66;
 
-            document.getElementById(buttonId).addEventListener('click', (event) => {
-
-                const id = event.target.getAttribute('id');
-
-                switch (id) {
-                    case showHideButtonId: {
-                        const el = document.getElementById('editor');
-                        showHideElement(el);
-                    }
+            if (event.shiftKey) {
+                let el = null
+                switch (event.keyCode) {
+                    case keyEditor:
+                        el = document.getElementById('editor');
                         break;
 
-                    case showHideDebugButtonId: {
-                        const el = document.getElementById('dump');
-                        showHideElement(el);
-                    }
+                    case keyDebug:
+                        el = document.getElementById('dump');
                         break;
 
-                    case testRandomnessButtonId: {
+                    case keyButtons:
+                        el = document.getElementById('control-buttons');
+                        break;
+
+                    case keyRandomness:
                         fw.testRandomness();
-                    }
                         break;
                 }
-
-            });
-
+                if (el) {
+                    showHideElement(el);
+                }
+            }
         });
     })();
 

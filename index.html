@@ -23,18 +23,17 @@
     <div class="container">
 
         <div class="control-buttons-container">
-            <div class="custom-button" id="spinTheWheel">Spin</div>
-            <div class="custom-button" id="stopTheWheel">Stop Wheel</div>
-            <div class="custom-button" id="justATest">Test Modal</div>
-            <div class="custom-button" id="renderMatter">Render Physics</div>
+            <div id="control-buttons" style="display: none;">
+                <div class="custom-button" id="spinTheWheel">Spin</div>
+                <div class="custom-button" id="stopTheWheel">Stop Wheel</div>
+                <div class="custom-button" id="justATest">Test Modal</div>
+                <div class="custom-button" id="renderMatter">Render Physics</div>
+            </div>
         </div>
 
         <div class="editor-area" style="display: block;">
-            <button id="show-hide-editor">Show / Hide Editor</button>
-            <button id="show-hide-debug">Show / Hide Debug</button>
-            <button id="test-randomness">Test Randomness</button>
             <pre id="dump" style="display: none;"></pre>
-            <div id="editor" style="display: block;">
+            <div id="editor" style="display: none;">
 
                 <div style="margin-top: 10px;">
                     <label>Settings: </label>

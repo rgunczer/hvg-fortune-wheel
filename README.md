@@ -10,4 +10,4 @@
 1. clone repository
 2. npm install
 3. live-server
-4. check browser (chrome) http://localhost:8000
+4. check browser (chrome) http://localhost:8080

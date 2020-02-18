@@ -1,6 +1,6 @@
 'use strict';
 
-function fortuneWheel(options, canvas) {
+function fortuneWheel(options, canvas, afterSliceSelectedCallbackFn) {
 
     const TWO_PI = Math.PI * 2;
 
@@ -14,6 +14,8 @@ function fortuneWheel(options, canvas) {
     const Bodies = Matter.Bodies;
     const Body = Matter.Body;
 
+    const context = canvas.getContext('2d');
+
     let engine = null;
     let render = null;
     let tongueBody = null;
@@ -21,7 +23,6 @@ function fortuneWheel(options, canvas) {
     let spinning = false;
     let drawPhysics = false;
     let testRandomness = false;
-    const context = canvas.getContext('2d');
 
     const flasher = {
         index: -1,
@@ -38,9 +39,11 @@ function fortuneWheel(options, canvas) {
             this.counter++;
 
             if (this.counter > options['flashing-time'].value) {
-                const slices = options.slices;
+                const { slices } = options;
 
-                showRandomQuestion(slices[this.index].icon);
+                if (isFunction(afterSliceSelectedCallbackFn)) {
+                    afterSliceSelectedCallbackFn(slices[this.index].icon);
+                }
 
                 if (testRandomness) {
                     const color = hexToRgb(slices[this.index].color);
@@ -573,7 +576,7 @@ function fortuneWheel(options, canvas) {
         stop,
         update,
         toggleDrawPhysics,
-        testRandomness () {
+        testRandomness() {
             testRandomness = true;
             options.slices.forEach(slice => {
                 slice.color = rgbToHex2(255, 255, 255);

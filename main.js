@@ -104,7 +104,7 @@ function animate() {
 (function init() {
     setCanvasSize();
     loadImages().then(() => {
-        fw = fortuneWheel(wheelData, getCanvas());
+        fw = fortuneWheel(wheelConfig, getCanvas(), showRandomQuestion);
         fw.init();
         window.requestAnimationFrame(animate);
     });

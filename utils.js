@@ -98,3 +98,7 @@ function showHideElement(elem) {
 function isObject(obj) {
     return typeof obj === 'object' && obj !== null;
 }
+
+function isFunction(obj) {
+    return !!(obj && obj.constructor && obj.call && obj.apply);
+}

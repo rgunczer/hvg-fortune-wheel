@@ -1,6 +1,6 @@
 'use strict';
 
-const wheelData = (function () {
+const wheelConfig = (function () {
 
     let config = {
         "flashing-color": "#ffffff",
@@ -194,8 +194,7 @@ const wheelData = (function () {
                 "text": "IT Services",
                 "icon": "itservices"
             }
-        },
-        slices: []
+        }
     }
 
     const savedConfig = localStorage.getItem('fortune-wheel-config');
@@ -205,7 +204,7 @@ const wheelData = (function () {
         }
     }
 
-    config.slices.length = 0;
+    config.slices = [];
     Object.keys(config.visuals).filter(x => x.startsWith('slice-')).forEach(key => {
         config.slices.push(config.visuals[key]);
     });

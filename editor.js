@@ -1,6 +1,6 @@
 'use strict';
 
-(function (predefinedColors) {
+(function (predefinedColors, wheelData) {
 
     const storageKeyWheelConfig = 'fortune-wheel-config';
 
@@ -409,4 +409,4 @@
 
     })();
 
-})(TCSColors);
+})(TCSColors, wheelConfig);

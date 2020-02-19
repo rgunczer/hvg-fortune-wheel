@@ -102,3 +102,8 @@ function isObject(obj) {
 function isFunction(obj) {
     return !!(obj && obj.constructor && obj.call && obj.apply);
 }
+
+function getPropValueOrDefault(obj, propName, defaultValue) {
+    const value =  obj.hasOwnProperty(propName) ? obj[propName] : defaultValue;
+    return value;
+}

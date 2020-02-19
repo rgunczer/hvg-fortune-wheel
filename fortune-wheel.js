@@ -9,8 +9,6 @@ function fortuneWheel(options, canvas, afterSliceSelectedCallbackFn) {
     const Render = Matter.Render;
     const World = Matter.World;
     const Constraint = Matter.Constraint;
-    const Composites = Matter.Composites;
-    const Composite = Matter.Composite;
     const Bodies = Matter.Bodies;
     const Body = Matter.Body;
 
@@ -24,54 +22,36 @@ function fortuneWheel(options, canvas, afterSliceSelectedCallbackFn) {
     let drawPhysics = false;
     let testRandomness = false;
 
-    const flasher = {
-        index: -1,
-        counter: 0,
-        fill: true,
+    let flasher = null;
 
-        setup(index = -1) {
-            this.index = index;
-            this.counter = 0
-            this.next = this.cooldown - this.nextStep;
-        },
+    function createFlasher(sliceToFlash) {
+        const originalSliceColor = sliceToFlash.color;
+        const flashColor = options['flashing-color'];
+        const timeOut = options['flashing-time'].value;
+        const flashRate = getPropValueOrDefault(options, 'flashing-rate', 9);
+        let counter = 0;
 
-        update(fillStyle) {
-            this.counter++;
-
-            if (this.counter > options['flashing-time'].value) {
-                const { slices } = options;
-
-                if (isFunction(afterSliceSelectedCallbackFn)) {
-                    afterSliceSelectedCallbackFn(slices[this.index].icon);
-                }
-
-                if (testRandomness) {
-                    const color = hexToRgb(slices[this.index].color);
-
-                    color.r -= 30;
-
-                    if (color.r < 0) {
-                        color.r = 0;
+        return {
+            getSliceToFlash() {
+                return sliceToFlash;
+            },
+            restoreOriginalSliceColor() {
+                sliceToFlash.color = originalSliceColor;
+            },
+            isDone() {
+                return counter > timeOut;
+            },
+            update() {
+                if (++counter % flashRate === 0) {
+                    if (sliceToFlash.color === flashColor) {
+                        sliceToFlash.color = originalSliceColor;
+                    } else {
+                        sliceToFlash.color = flashColor;
                     }
-
-                    slices[this.index].color = rgbToHex2(color.r, color.r, color.r);
-                }
-
-                this.setup();
-
-                return fillStyle;
-            } else {
-                if (this.counter % 9 === 0) {
-                    this.fill = !this.fill;
-                }
-                if (this.fill) {
-                    return options['flashing-color']
-                } else {
-                    return fillStyle;
                 }
             }
-        }
-    };
+        };
+    }
 
     function drawTask(params, objToDraw, taskFn) {
         if (objToDraw.visible) {
@@ -88,17 +68,15 @@ function fortuneWheel(options, canvas, afterSliceSelectedCallbackFn) {
         context.rotate(angle);
 
         for (let i = 0; i < slices.length; ++i) {
-            context.fillStyle = slices[i].color;
+            const slice = slices[i];
 
             context.beginPath();
-            context.arc(0, 0, radius, (sliceAngle * i), sliceAngle + (sliceAngle * i));
+            context.arc(0, 0, radius, sliceAngle * i, sliceAngle + sliceAngle * i);
             context.lineTo(0, 0);
 
-            if (flasher.index === i) {
-                context.fillStyle = flasher.update(context.fillStyle);
-            }
+            context.fillStyle = slice.color;
 
-            if (options.slices[i].visible) {
+            if (slice.visible) {
                 context.fill();
             }
         }
@@ -358,7 +336,7 @@ function fortuneWheel(options, canvas, afterSliceSelectedCallbackFn) {
 
     function spin() {
         spinning = true;
-        flasher.setup();
+        flasher = null;
 
         const speedMin = toInt(options['speed-min'].value);
         const speedMax = toInt(options['speed-max'].value);
@@ -509,23 +487,51 @@ function fortuneWheel(options, canvas, afterSliceSelectedCallbackFn) {
         Engine.update(engine);
         if (spinning) {
             checkSelectedSliceAfterSpinning();
+        } else {
+            if (flasher) {
+                flasher.update();
+                if (flasher.isDone()) {
+                    const sliceToFlash = flasher.getSliceToFlash();
+                    flasher.restoreOriginalSliceColor();
+                    flasher = null;
+                    if (isFunction(afterSliceSelectedCallbackFn)) {
+                        afterSliceSelectedCallbackFn(sliceToFlash.icon);
+                    }
+                }
+            }
+        }
+    }
+
+    function getSliceWithTongueInside() {
+        const { arr, radius } = calcCollisionCircles();
+        for (let i = 0; i < arr.length; ++i) {
+            const { x, y } = arr[i];
+            const inside = pointInCircle(tongueBody.position.x, tongueBody.position.y, x, y, radius);
+            if (inside) {
+                return options.slices[i];
+            }
         }
     }
 
     function checkSelectedSliceAfterSpinning() {
         if (wheelBody.angularSpeed < 0.001 && tongueBody.angularSpeed < 0.001) {
-            const slices = options.slices;
-            const { arr, radius } = calcCollisionCircles();
+            const slice = getSliceWithTongueInside();
+            if (slice) {
+                console.log('inside [' + slice.text + ']');
 
-            for (let i = 0; i < arr.length; ++i) {
-                const inside = pointInCircle(tongueBody.position.x, tongueBody.position.y, arr[i].x, arr[i].y, radius);
-                dump.pointInSideCircle = inside;
-                if (inside) {
-                    console.log('inside [' + slices[i].text + ']');
-                    spinning = false;
-                    flasher.setup(i);
-                    break;
+                if (testRandomness) {
+                    const color = hexToRgb(slice.color);
+
+                    color.r -= 30;
+                    if (color.r < 0) {
+                        color.r = 0;
+                    }
+
+                    slice.color = rgbToHex2(color.r, color.r, color.r);
                 }
+
+                spinning = false;
+                flasher = createFlasher(slice);
             }
         }
 
@@ -561,7 +567,7 @@ function fortuneWheel(options, canvas, afterSliceSelectedCallbackFn) {
 
     function stop() {
         spinning = false;
-        flasher.setup();
+        flasher = null;
         Body.setAngularVelocity(wheelBody, 0);
     }
 

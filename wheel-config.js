@@ -3,6 +3,7 @@
 const wheelConfig = (function () {
 
     let config = {
+        "flashing-rate": 10,
         "flashing-color": "#ffffff",
         "flashing-time": {
             "range-min": 0,

@@ -22,7 +22,7 @@ document.querySelector('#stopTheWheel').addEventListener('click', () => {
 
 document.querySelector('#justATest').addEventListener('click', () => {
     modalElem.style.display = 'block';
-    showRandomQuestion();
+    showRandomQuestion(document.getElementById('sliceText').value);
 });
 
 document.querySelector('#renderMatter').addEventListener('click', () => {
@@ -125,7 +125,28 @@ function loadQuestions(callback) {
     xobj.send(null);
 }
 
+let previousObj = {
+    index: -1,
+    type: null
+};
+
 function showRandomQuestion(selectedSlice) {
+    let filteredQuestions = filterQuestions(selectedSlice);
+    let rndNum = previousObj.index;
+
+    if (filteredQuestions.length === 1) {
+        rndNum = 0;
+    } else {
+        rndNum = getDifferentRandomThanLastOne(selectedSlice, filteredQuestions.length - 1);
+    }
+
+    previousObj.type = selectedSlice;
+    previousObj.index = rndNum;
+
+    updateQuestionElements(filteredQuestions[rndNum]);
+}
+
+function filterQuestions(selectedSlice) {
     let filteredQuestions = [];
 
     switch (selectedSlice) {
@@ -138,14 +159,29 @@ function showRandomQuestion(selectedSlice) {
             filteredQuestions = questions.filter(x => x.type === "any");
     }
 
-    // let rndNum = -1;
+    if (filteredQuestions.length === 0) {
+        return questions;
+    }
 
-    let rndNum = getRandom(0, filteredQuestions.length - 1);
-    console.log('length: ' + filteredQuestions.length + '   random:  ' + rndNum);
+    return filteredQuestions;
+}
 
-    questionTextElem.innerHTML = filteredQuestions[rndNum].text;
-    if (filteredQuestions[rndNum].choices) {
-        questionChoicesElem.innerHTML = filteredQuestions[rndNum].choices;
+function getDifferentRandomThanLastOne(selectedSlice, max) {
+    let rndNum = getRandom(0, max);
+
+    if (previousObj.type === selectedSlice && previousObj.index === rndNum) {
+        while (previousObj.index === rndNum) {
+            rndNum = getRandom(0, max);
+        }
+    }
+
+    return rndNum;
+}
+
+function updateQuestionElements(question) {
+    questionTextElem.innerHTML = question.text;
+    if (question.choices) {
+        questionChoicesElem.innerHTML = question.choices;
     } else {
         questionChoicesElem.innerHTML = null;
     }

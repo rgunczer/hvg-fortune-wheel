@@ -2,6 +2,7 @@
 
 let fw;
 const dump = {};
+let defaultQuestions;
 let questions;
 
 const modalElem = document.querySelector('#question-modal');
@@ -27,6 +28,10 @@ document.querySelector('#justATest').addEventListener('click', () => {
 
 document.querySelector('#renderMatter').addEventListener('click', () => {
     fw.toggleDrawPhysics();
+});
+
+document.querySelector('#inputFileQuestions').addEventListener('change', e => {
+    openFile(e);
 });
 
 document.addEventListener('keyup', (event) => {
@@ -108,15 +113,17 @@ function animate() {
         fw.init();
         window.requestAnimationFrame(animate);
     });
-    loadQuestions(function (response) {
+    loadDefaultQuestions(function (response) {
+        // const q = JSON.parse(response);
+        defaultQuestions = JSON.parse(response);
         questions = JSON.parse(response);
     });
 })();
 
-function loadQuestions(callback) {
+function loadDefaultQuestions(callback) {
     var xobj = new XMLHttpRequest();
     xobj.overrideMimeType("application/json");
-    xobj.open('GET', 'questions.json', true);
+    xobj.open('GET', 'defaultQuestions.json', true);
     xobj.onreadystatechange = function () {
         if (xobj.readyState == 4 && xobj.status == "200") {
             callback(xobj.responseText);
@@ -187,4 +194,53 @@ function updateQuestionElements(question) {
     }
 
     modalElem.style.display = 'block';
+}
+
+function openFile(event) {
+    var input = event.target;
+
+    var reader = new FileReader();
+    reader.onload = function () {
+        var text = reader.result;
+        var node = document.getElementById('output');
+        // node.innerText = text; // TODO: error message could be shown here?
+        parseText(text);
+    };
+    reader.readAsText(input.files[0]);
+}
+
+function parseText(text) {
+    let importedQuestions = [];
+
+    function createNewQuestionObject(a) {
+        let questionElement = {
+            type: 'any',
+            text: '',
+            choices: null
+        };
+        const delimiter = ';'; // TODO: from global
+        const parts = a.split(delimiter);
+
+        for (let i = 0; i < parts.length; i++) {
+            const part = parts[i];
+            if (part.startsWith('Q:')) {
+                questionElement.text = part.substring(2);
+            }
+            if (part.startsWith('C:')) {
+                questionElement.choices = part.substring(2);
+            }
+            if (part.startsWith('T:')) {
+                questionElement.type = part.substring(2);
+            }
+        }
+
+        importedQuestions.push(questionElement);
+    }
+
+    var lines = text.split('\n');
+    for (let i = 0; i < lines.length; i++) {
+        createNewQuestionObject(lines[i].replace(/(\r\n|\n|\r)/gm, ""));
+    }
+
+    questions = [...importedQuestions];
 }

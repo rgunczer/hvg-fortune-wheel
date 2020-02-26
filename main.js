@@ -156,18 +156,14 @@ function showRandomQuestion(selectedSlice) {
 function filterQuestions(selectedSlice) {
     let filteredQuestions = [];
 
-    switch (selectedSlice) {
-        case "corporate":
-        case "life":
-            filteredQuestions = questions.filter(x => x.type === selectedSlice);
-            break;
+    filteredQuestions = questions.filter(x => x.type === selectedSlice);
 
-        default:
-            filteredQuestions = questions.filter(x => x.type === "any");
-    }
 
     if (filteredQuestions.length === 0) {
-        return questions;
+        filteredQuestions = questions.filter(x => x.type === "any");
+        if (filteredQuestions.length === 0) {
+            return questions;
+        }
     }
 
     return filteredQuestions;

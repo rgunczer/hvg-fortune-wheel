@@ -200,7 +200,14 @@ function openFile(event) {
         var text = reader.result;
         var node = document.getElementById('output');
         // node.innerText = text; // TODO: error message could be shown here?
-        parseText(text);
+       
+        try {
+            parseText(text);
+            alert(`Imported questions:\n\n${text}`);
+        }
+        catch {
+            alert('Error');
+        }
     };
     reader.readAsText(input.files[0]);
 }
